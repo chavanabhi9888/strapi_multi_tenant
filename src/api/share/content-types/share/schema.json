@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shares",
+  "info": {
+    "singularName": "share",
+    "pluralName": "shares",
+    "displayName": "Share"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "share": {
+      "type": "boolean"
+    }
+  }
+}

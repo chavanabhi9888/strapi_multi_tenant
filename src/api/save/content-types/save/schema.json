@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "saves",
+  "info": {
+    "singularName": "save",
+    "pluralName": "saves",
+    "displayName": "Save"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "save": {
+      "type": "boolean"
+    }
+  }
+}
