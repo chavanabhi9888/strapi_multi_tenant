@@ -4,7 +4,8 @@
   "info": {
     "singularName": "organization",
     "pluralName": "organizations",
-    "displayName": "Organization"
+    "displayName": "Organization",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -18,20 +19,18 @@
       "type": "text"
     },
     "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "verify": {
       "displayName": "Company Verification",
       "type": "component",
       "repeatable": false,
       "component": "verify.company-verification"
-    },
-    "website": {
-      "type": "string"
     },
     "organization_users": {
       "type": "relation",

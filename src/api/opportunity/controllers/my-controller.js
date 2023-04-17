@@ -1,9 +1,10 @@
-const client = require("../../../../config/pg");
+const { connect, disconnect } = require("../../../../config/pg");
 
 module.exports = {
   //fetching all the posts
   async find(ctx) {
     try {
+      const client = await connect();
       const query = `
       SELECT 
       org_logo.url AS "Organization logo",
@@ -12,14 +13,13 @@ module.exports = {
       opp.city AS "City",
       opp_image.url AS "Opportunity image",
       opp.months AS "Duration",
-      org.website_link AS "Website",
       ROUND(AVG(r.value), 1) AS "Rating"
     FROM 
-      oppurtunities opp
-      JOIN oppurtunities_organization_links ool ON opp.id = ool.oppurtunity_id
+      opportunities opp
+      JOIN opportunities_organization_links ool ON opp.id = ool.opportunity_id
       JOIN organizations org ON ool.organization_id = org.id
-      JOIN oppurtunities_organization_user_links ooul ON opp.id = ooul.oppurtunity_id
-      JOIN ratings_oppurtunity_links rol ON rol.oppurtunity_id = opp.id
+      JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
+      JOIN ratings_opportunity_links rol ON rol.opportunity_id = opp.id
       JOIN ratings r ON r.id = rol.rating_id
       JOIN files_related_morphs frm_logo ON frm_logo.related_id = opp.id AND frm_logo.field = 'logo'
       JOIN files org_logo ON frm_logo.file_id = org_logo.id
@@ -33,12 +33,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      org.website_link,
       opp_image.url;
     `;
 
       const data = await client.query(query);
-
       ctx.send({
         data: data.rows,
       });
@@ -50,19 +48,20 @@ module.exports = {
   //fetching responsibilities and skills
   async findPost(ctx) {
     try {
+      const client = await connect();
       const query = `
       SELECT 
         org_logo.url AS "Organization logo",
         org.name AS "Organization name",
-        opp.profile AS "Oppurtunity name",
+        opp.profile AS "Opportunity name",
         opp_image.url AS "Opportunity image",
         opp.responsibilities AS "Responsibilities",
         opp.skills AS "Skills"
       FROM 
-        oppurtunities opp
-      JOIN oppurtunities_organization_links ool ON opp.id = ool.oppurtunity_id
+        opportunities opp
+      JOIN opportunities_organization_links ool ON opp.id = ool.opportunity_id
       JOIN organizations org ON ool.organization_id = org.id
-      JOIN oppurtunities_organization_user_links ooul ON opp.id = ooul.oppurtunity_id
+      JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
       JOIN files_related_morphs frm_logo ON frm_logo.related_id = opp.id AND frm_logo.field = 'logo'
       JOIN files org_logo ON frm_logo.file_id = org_logo.id
       JOIN files_related_morphs frm_image ON frm_image.related_id = opp.id AND frm_image.field = 'image'
@@ -91,6 +90,7 @@ module.exports = {
   //displaying facilities, terms and support
   async applyPost(ctx) {
     try {
+      const client = await connect();
       const query = `
       SELECT
 	      opp_image.url AS "Opportunity image",
@@ -100,10 +100,10 @@ module.exports = {
         opp.support AS "Support provided",
         opp.terms AS "Terms and Conditions"
       FROM 
-        oppurtunities opp
-      JOIN oppurtunities_organization_links ool ON opp.id = ool.oppurtunity_id
+        opportunities opp
+      JOIN opportunities_organization_links ool ON opp.id = ool.opportunity_id
       JOIN organizations org ON ool.organization_id = org.id
-      JOIN oppurtunities_organization_user_links ooul ON opp.id = ooul.oppurtunity_id
+      JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
       JOIN files_related_morphs frm_logo ON frm_logo.related_id = opp.id AND frm_logo.field = 'logo'
       JOIN files org_logo ON frm_logo.file_id = org_logo.id
       JOIN files_related_morphs frm_image ON frm_image.related_id = opp.id AND frm_image.field = 'image'
@@ -131,9 +131,10 @@ module.exports = {
   //deleting an opportunity
   async delete(ctx) {
     try {
+      const client = await connect();
       const query = `
       UPDATE
-        oppurtunities
+        opportunities
       SET
         is_deleted = true
       Where
@@ -150,8 +151,9 @@ module.exports = {
   },
 
   //Find Ongoing tasks
-  async delete(ctx) {
+  async findOngoing(ctx) {
     try {
+      const client = await connect();
       const query = `SELECT 
       org_logo.url AS "Organization logo",
       org.name AS "Organization name",
@@ -159,14 +161,13 @@ module.exports = {
       opp.city AS "City",
       opp_image.url AS "Opportunity image",
       opp.months AS "Duration",
-      org.website_link AS "Website",
       ROUND(AVG(r.value), 1) AS "Rating"
     FROM 
-      oppurtunities opp
-      JOIN oppurtunities_organization_links ool ON opp.id = ool.oppurtunity_id
+      opportunities opp
+      JOIN opportunities_organization_links ool ON opp.id = ool.opportunity_id
       JOIN organizations org ON ool.organization_id = org.id
-      JOIN oppurtunities_organization_user_links ooul ON opp.id = ooul.oppurtunity_id
-      JOIN ratings_oppurtunity_links rol ON rol.oppurtunity_id = opp.id
+      JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
+      JOIN ratings_opportunity_links rol ON rol.opportunity_id = opp.id
       JOIN ratings r ON r.id = rol.rating_id
       JOIN files_related_morphs frm_logo ON frm_logo.related_id = opp.id AND frm_logo.field = 'logo'
       JOIN files org_logo ON frm_logo.file_id = org_logo.id
@@ -180,7 +181,6 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      org.website_link,
       opp_image.url;
     `;
 

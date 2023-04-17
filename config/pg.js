@@ -12,14 +12,32 @@ const client = new Client({
 });
 
 async function connect() {
-    try {
+  try {
+    if (!client._connected) {
       await client.connect();
       console.log("Connected successfully");
-    } catch (error) {
-      console.error("Error connecting:", error);
+    } else {
+      console.log("Client already connected");
     }
+    return client;
+  } catch (error) {
+    console.error("Error connecting:", error);
+    // Reconnect if there was an error connecting
+    console.log("Reconnecting...");
+    await client.connect();
+    console.log("Reconnected successfully");
+    return client;
   }
-  
-  connect();
+}
 
-module.exports = client;
+
+async function disconnect() {
+  try {
+    await client.end();
+    console.log("Disconnected successfully");
+  } catch (error) {
+    console.error("Error disconnecting:", error);
+  }
+}
+
+module.exports = { client, connect, disconnect };

@@ -123,11 +123,6 @@
       "relation": "oneToMany",
       "target": "api::rating.rating",
       "mappedBy": "opportunity"
-    },
-    "rating": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::rating.rating"
     }
   }
 }
