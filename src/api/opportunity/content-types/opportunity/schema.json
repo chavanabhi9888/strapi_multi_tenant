@@ -46,7 +46,7 @@
     "openings": {
       "type": "integer"
     },
-    "start_date": {
+    "start": {
       "type": "enumeration",
       "enum": [
         "immediately",
@@ -129,6 +129,61 @@
       "relation": "oneToMany",
       "target": "api::opportunity-status.opportunity-status",
       "mappedBy": "opportunity"
+    },
+    "state": {
+      "type": "customField",
+      "options": [
+        "Remote",
+        "Andhra Pradesh",
+        "Arunachal Pradesh",
+        "Assam",
+        "Bihar",
+        "Chhattisgarh",
+        "Goa",
+        "Gujarat",
+        "Haryana",
+        "Himachal Pradesh",
+        "Jharkhand",
+        "Karnataka",
+        "Kerala",
+        "Madhya Pradesh",
+        "Maharashtra",
+        "Manipur",
+        "Meghalaya",
+        "Mizoram",
+        "Nagaland",
+        "Odisha",
+        "Punjab",
+        "Rajasthan",
+        "Sikkim",
+        "Tamil Nadu",
+        "Telangana",
+        "Tripura",
+        "Uttar Pradesh",
+        "Uttarakhand",
+        "West Bengal",
+        "Andaman and Nicobar Islands",
+        "Chandigarh",
+        "Dadra and Nagar Haveli and Daman and Diu",
+        "Lakshadweep",
+        "Delhi",
+        "Puducherry",
+        "Jammu and Kashmir",
+        "Ladakh"
+      ],
+      "customField": "plugin::multi-select.multi-select"
+    },
+    "lat": {
+      "type": "float"
+    },
+    "long": {
+      "type": "float"
+    },
+    "start_on": {
+      "type": "date"
+    },
+    "end_on": {
+      "type": "date"
     }
   }
 }
