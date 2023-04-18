@@ -1,20 +1,29 @@
 {
   "collectionName": "components_verify_company_verifications",
   "info": {
-    "displayName": "Company Verification"
+    "displayName": "Company Verification",
+    "description": ""
   },
   "options": {},
   "attributes": {
-    "Select": {
+    "select": {
       "type": "enumeration",
       "enum": [
-        "Website",
-        "Social",
-        "CIN"
+        "website",
+        "social",
+        "cin"
       ]
     },
     "link": {
       "type": "string"
+    },
+    "document": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

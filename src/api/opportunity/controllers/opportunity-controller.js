@@ -1,4 +1,4 @@
-const { connect, disconnect } = require("../../../../config/pg");
+const { connect } = require("../../../../config/pg");
 
 module.exports = {
   //fetching all the posts
@@ -88,7 +88,7 @@ module.exports = {
   },
 
   //displaying facilities, terms and support
-  async applyPost(ctx) {
+  async findDetails(ctx) {
     try {
       const client = await connect();
       const query = `
@@ -154,7 +154,8 @@ module.exports = {
   async findOngoing(ctx) {
     try {
       const client = await connect();
-      const query = `SELECT 
+      const query = `
+      SELECT 
       org_logo.url AS "Organization logo",
       org.name AS "Organization name",
       opp.profile AS "Opportunity profile",

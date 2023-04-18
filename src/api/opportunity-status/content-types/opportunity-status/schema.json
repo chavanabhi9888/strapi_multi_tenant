@@ -4,7 +4,8 @@
   "info": {
     "singularName": "opportunity-status",
     "pluralName": "opportunity-statuses",
-    "displayName": "Opportunity Status"
+    "displayName": "Opportunity Status",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -24,6 +25,18 @@
     },
     "end_date": {
       "type": "date"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "opportunity_statuses"
+    },
+    "opportunity": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::opportunity.opportunity",
+      "inversedBy": "opportunity_statuses"
     }
   }
 }

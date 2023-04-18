@@ -43,6 +43,10 @@
       "relation": "oneToMany",
       "target": "api::opportunity.opportunity",
       "mappedBy": "organization"
+    },
+    "independent": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

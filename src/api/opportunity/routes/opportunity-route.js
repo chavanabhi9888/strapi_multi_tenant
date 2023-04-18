@@ -3,7 +3,7 @@ module.exports = {
       {
         method: "GET",
         path: "/find",
-        handler: "my-controller.find",
+        handler: "opportunity-controller.find",
         config: {
           policies: [],
           middleware: [],
@@ -12,7 +12,7 @@ module.exports = {
       {
         method: "GET",
         path: "/findPost/:id",
-        handler: "my-controller.findPost",
+        handler: "opportunity-controller.findPost",
         config: {
           policies: [],
           middleware: [],
@@ -20,8 +20,8 @@ module.exports = {
       },
       {
         method: "GET",
-        path: "/applyPost/:id",
-        handler: "my-controller.applyPost",
+        path: "/findDetails/:id",
+        handler: "opportunity-controller.findDetails",
         config: {
           policies: [],
           middleware: [],
@@ -30,7 +30,7 @@ module.exports = {
       {
         method: "DELETE",
         path: "/delete/:id",
-        handler: "my-controller.delete",
+        handler: "opportunity-controller.delete",
         config: {
           policies: [],
           middleware: [],
@@ -38,8 +38,8 @@ module.exports = {
       },
       {
         method: "GET",
-        path: "/findOngoing/:id",
-        handler: "my-controller.findOngoing",
+        path: "/findOngoing",
+        handler: "opportunity-controller.findOngoing",
         config: {
           policies: [],
           middleware: [],
