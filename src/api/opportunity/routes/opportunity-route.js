@@ -1,7 +1,7 @@
 module.exports = {
     routes: [
       //dashboard fetch
-      //find
+      //find all the opportunities
       {
         method: "GET",
         path: "/find",
@@ -11,7 +11,7 @@ module.exports = {
           middleware: [],
         },
       },
-      //find Opportunity
+      //find by id
       {
         method: "GET",
         path: "/findOpportunity/:id",
@@ -34,7 +34,7 @@ module.exports = {
       //view Ongoing
       {
         method: "GET",
-        path: "/viewOngoing",
+        path: "/viewOngoing/:id",
         handler: "opportunity-controller.viewOngoing",
         config: {
           policies: [],
@@ -44,7 +44,7 @@ module.exports = {
       //view Completed
       {
         method: "GET",
-        path: "/viewCompleted",
+        path: "/viewCompleted/:id",
         handler: "opportunity-controller.viewCompleted",
         config: {
           policies: [],
@@ -56,7 +56,7 @@ module.exports = {
       //find top 5 new opportunities
       {
         method: "GET",
-        path: "/findTopFive",
+        path: "/findTopFive/:id",
         handler: "opportunity-controller.findTopFive",
         config: {
           policies: [],
@@ -66,7 +66,7 @@ module.exports = {
       //find top 5 ongoing and waiting opportunities
       {
         method: "GET",
-        path: "/findTopFiveOngoing",
+        path: "/findTopFiveOngoing/:id",
         handler: "opportunity-controller.findTopFiveOngoing",
         config: {
           policies: [],
@@ -76,8 +76,19 @@ module.exports = {
       //find top 5 completed opportunities
       {
         method: "GET",
-        path: "/findTopFiveCompleted",
+        path: "/findTopFiveCompleted/:id",
         handler: "opportunity-controller.findTopFiveCompleted",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
+//---------------------------------------------------------------------------------------
+      //delete An Opportunity
+      {
+        method: "DELETE",
+        path: "/delete/:id",
+        handler: "opportunity-controller.delete",
         config: {
           policies: [],
           middleware: [],
@@ -89,16 +100,6 @@ module.exports = {
       //   method: "GET",
       //   path: "/applyOpportunity",
       //   handler: "opportunity-controller.applyOpportunity",
-      //   config: {
-      //     policies: [],
-      //     middleware: [],
-      //   },
-      // },
-      //delete An Opportunity
-      // {
-      //   method: "DELETE",
-      //   path: "/delete/:id",
-      //   handler: "opportunity-controller.delete",
       //   config: {
       //     policies: [],
       //     middleware: [],

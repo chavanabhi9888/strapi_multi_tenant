@@ -38,9 +38,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      opp_image.url
+      opp_image.url,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC
+      opp.published_at DESC
     `;
 
       const data = await client.query(query);
@@ -77,16 +78,17 @@ module.exports = {
       LEFT JOIN opportunities_tags_links otl ON otl.opportunity_id = opp.id
       LEFT JOIN tags t ON otl.tag_id = t.id
       WHERE
-      opp.id = 1 AND is_deleted = false
+      opp.id = $1 AND opp.is_deleted = false
       GROUP BY 
       org_logo.url,
       org.name,
       opp.profile,
       opp_image.url,
       opp.responsibilities,
-      opp.skills
+      opp.skills,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC;
+      opp.published_at DESC;
     `;
 
       const data = await client.query(query, [ctx.params.id]);
@@ -121,16 +123,17 @@ module.exports = {
       LEFT JOIN files_related_morphs frm_image ON frm_image.related_id = opp.id AND frm_image.field = 'image'
       LEFT JOIN files opp_image ON frm_image.file_id = opp_image.id
       WHERE
-      opp.id = 1 AND is_deleted = false
+      opp.id = $1 AND opp.is_deleted = false
       GROUP BY 
       opp_image.url,
       org.name,
       opp.profile,
       opp.facilities,
       opp.support,
-      opp.terms
+      opp.terms,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC;
+      opp.published_at DESC;
         `;
 
       const data = await client.query(query, [ctx.params.id]);
@@ -175,7 +178,7 @@ module.exports = {
       LEFT JOIN opportunity_statuses_user_links osul ON os.id = osul.opportunity_status_id
       LEFT JOIN up_users uu ON uu.id = osul.user_id
       WHERE
-      uu.id = 1 AND os.status = 'ongoing' OR os.status = 'waiting'
+      uu.id = $1 AND os.status = 'ongoing' OR os.status = 'waiting' AND opp.is_deleted = false 
       GROUP BY
       org_logo.url,
       opp.months,
@@ -185,9 +188,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      opp_image.url
+      opp_image.url,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC;
+      opp.published_at DESC;
       `;
 
       const data = await client.query(query, [ctx.params.id]);
@@ -232,7 +236,7 @@ module.exports = {
       LEFT JOIN opportunity_statuses_user_links osul ON os.id = osul.opportunity_status_id
       LEFT JOIN up_users uu ON uu.id = osul.user_id
       WHERE
-      uu.id = 1 AND os.status = 'completed'
+      uu.id = $1 AND os.status = 'completed' AND opp.is_deleted = false
       GROUP BY
       org_logo.url,
       opp.months,
@@ -242,9 +246,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      opp_image.url
+      opp_image.url,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC;
+      opp.published_at DESC;
       `;
 
       const data = await client.query(query, [ctx.params.id]);
@@ -294,9 +299,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      opp_image.url
+      opp_image.url,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC
+      opp.published_at DESC
       LIMIT
       5
     `;
@@ -342,7 +348,7 @@ module.exports = {
       LEFT JOIN opportunity_statuses_user_links osul ON os.id = osul.opportunity_status_id
       LEFT JOIN up_users uu ON uu.id = osul.user_id
       WHERE
-      uu.id = 1 AND os.status = 'ongoing' OR os.status = 'waiting'
+      uu.id = 1 AND os.status = 'ongoing' OR os.status = 'waiting' AND opp.is_deleted = false
       GROUP BY
       org_logo.url,
       opp.months,
@@ -352,9 +358,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      opp_image.url
+      opp_image.url,
+      opp.published_at
       ORDER BY
-      MAX(opp.published_at) DESC
+      opp.published_at DESC
       LIMIT
       5
     `;
@@ -400,7 +407,7 @@ module.exports = {
       LEFT JOIN opportunity_statuses_user_links osul ON os.id = osul.opportunity_status_id
       LEFT JOIN up_users uu ON uu.id = osul.user_id
       WHERE
-      uu.id = 1 AND os.status = 'completed'
+      uu.id = 1 AND os.status = 'completed' AND opp.is_deleted = false
       GROUP BY
       org_logo.url,
       opp.months,
@@ -410,9 +417,10 @@ module.exports = {
       org.name,
       opp.profile,
       opp.city,
-      opp_image.url
+      opp_image.url,
+      opp.published_at
       ORDER BY
-        MAX(opp.published_at) DESC
+      opp.published_at DESC
       LIMIT
       5
     `;
@@ -426,6 +434,25 @@ module.exports = {
     }
   },
   
+  //deleting an opportunity
+  async delete(ctx) {
+    try {
+      const client = await connect();
+      const query = `
+      UPDATE
+        opportunities
+      SET
+        is_deleted = true
+      Where
+        id = $1`;
+
+      const data = await client.query(query, [ctx.params.id]);
+      ctx.send("Record deleted sucessfully");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   //Here the user will be able to apply to opportunities
   // async applyOpportunity(ctx) {
   //   try {
@@ -433,28 +460,6 @@ module.exports = {
   //     const query = `
       
   //   `;
-
-  //     const data = await client.query(query, [ctx.params.id]);
-
-  //     ctx.send({
-  //       data: data.rows,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
-
-  //deleting an opportunity
-  // async delete(ctx) {
-  //   try {
-  //     const client = await connect();
-  //     const query = `
-  //     UPDATE
-  //       opportunities
-  //     SET
-  //       is_deleted = true
-  //     Where
-  //       id = $1`;
 
   //     const data = await client.query(query, [ctx.params.id]);
 

@@ -24,83 +24,6 @@
       "target": "api::organization-user.organization-user",
       "inversedBy": "opportunities"
     },
-    "profile": {
-      "type": "string"
-    },
-    "skills": {
-      "type": "string"
-    },
-    "opportunity_type": {
-      "type": "enumeration",
-      "enum": [
-        "internship",
-        "volunteer"
-      ]
-    },
-    "city": {
-      "type": "string"
-    },
-    "part_time": {
-      "type": "boolean"
-    },
-    "openings": {
-      "type": "integer"
-    },
-    "start": {
-      "type": "enumeration",
-      "enum": [
-        "immediately",
-        "later"
-      ]
-    },
-    "duration": {
-      "type": "string"
-    },
-    "months": {
-      "type": "string"
-    },
-    "responsibilities": {
-      "type": "text"
-    },
-    "stipend_type": {
-      "type": "enumeration",
-      "enum": [
-        "paid",
-        "unpaid",
-        "performance",
-        "negotiable"
-      ]
-    },
-    "currency": {
-      "type": "string"
-    },
-    "stipend_value": {
-      "type": "decimal"
-    },
-    "payment_type": {
-      "type": "string"
-    },
-    "perks": {
-      "type": "text"
-    },
-    "ppo": {
-      "type": "boolean"
-    },
-    "cover_letter": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "files"
-      ]
-    },
-    "assessment_questions": {
-      "type": "text"
-    },
-    "isDeleted": {
-      "type": "boolean",
-      "default": false
-    },
     "image": {
       "type": "media",
       "multiple": false,
@@ -109,26 +32,25 @@
         "images"
       ]
     },
-    "facilities": {
-      "type": "text"
+    "profile": {
+      "type": "string",
+      "required": true
     },
-    "support": {
-      "type": "text"
+    "skills": {
+      "type": "string",
+      "required": true
     },
-    "terms": {
-      "type": "text"
+    "opportunity_type": {
+      "type": "enumeration",
+      "enum": [
+        "internship",
+        "volunteer"
+      ],
+      "required": true
     },
-    "ratings": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::rating.rating",
-      "mappedBy": "opportunity"
-    },
-    "opportunity_statuses": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::opportunity-status.opportunity-status",
-      "mappedBy": "opportunity"
+    "city": {
+      "type": "string",
+      "required": true
     },
     "state": {
       "type": "customField",
@@ -171,7 +93,113 @@
         "Jammu and Kashmir",
         "Ladakh"
       ],
-      "customField": "plugin::multi-select.multi-select"
+      "customField": "plugin::multi-select.multi-select",
+      "required": true
+    },
+    "part_time": {
+      "type": "boolean",
+      "required": true
+    },
+    "openings": {
+      "type": "integer",
+      "required": true
+    },
+    "start": {
+      "type": "enumeration",
+      "enum": [
+        "immediately",
+        "later"
+      ]
+    },
+    "start_on": {
+      "type": "date",
+      "required": true
+    },
+    "end_on": {
+      "type": "date",
+      "required": true
+    },
+    "duration": {
+      "type": "string",
+      "required": true
+    },
+    "months": {
+      "type": "string",
+      "required": true
+    },
+    "responsibilities": {
+      "type": "text",
+      "required": true
+    },
+    "stipend_type": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "unpaid",
+        "performance",
+        "negotiable"
+      ]
+    },
+    "currency": {
+      "type": "string",
+      "required": true
+    },
+    "stipend_value": {
+      "type": "decimal",
+      "required": true
+    },
+    "payment_type": {
+      "type": "string",
+      "required": true
+    },
+    "perks": {
+      "type": "text",
+      "required": true
+    },
+    "ppo": {
+      "type": "boolean",
+      "required": true
+    },
+    "cover_letter": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "assessment_questions": {
+      "type": "text",
+      "required": true
+    },
+    "facilities": {
+      "type": "text",
+      "required": true
+    },
+    "support": {
+      "type": "text",
+      "required": true
+    },
+    "terms": {
+      "type": "text",
+      "required": true
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tag.tag"
+    },
+    "ratings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rating.rating",
+      "mappedBy": "opportunity"
+    },
+    "opportunity_statuses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::opportunity-status.opportunity-status",
+      "mappedBy": "opportunity"
     },
     "lat": {
       "type": "float"
@@ -179,16 +207,15 @@
     "long": {
       "type": "float"
     },
-    "start_on": {
-      "type": "date"
+    "isDeleted": {
+      "type": "boolean",
+      "default": false
     },
-    "end_on": {
-      "type": "date"
-    },
-    "tags": {
+    "saves": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::tag.tag"
+      "target": "api::save.save",
+      "mappedBy": "opportunity"
     }
   }
 }

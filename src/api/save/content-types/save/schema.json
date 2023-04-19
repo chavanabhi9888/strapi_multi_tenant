@@ -4,7 +4,8 @@
   "info": {
     "singularName": "save",
     "pluralName": "saves",
-    "displayName": "Save"
+    "displayName": "Save",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,7 +13,24 @@
   "pluginOptions": {},
   "attributes": {
     "save": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": true
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "saves"
+    },
+    "opportunity": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::opportunity.opportunity",
+      "inversedBy": "saves"
+    },
+    "isDeleted": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
