@@ -7,12 +7,10 @@ module.exports = {
     try {
       const client = await connect();
       const query = `
-      UPDATE
-        saves
-      SET
-        is_deleted = true
-      Where
-        id = $1
+      DELETE FROM saves s
+      USING saves_opportunity_links sol, saves_user_links sul
+      WHERE s.id = sol.save_id AND sul.save_id = s.id AND
+      s.is_deleted = false AND s.id = $1;
     `;
 
       const data = await client.query(query,[ctx.params.id]);

@@ -11,6 +11,7 @@ module.exports = {
           middleware: [],
         },
       },
+      //GET all the bookmarked opportunity
       {
         method: "GET",
         path: "/saved/:id",

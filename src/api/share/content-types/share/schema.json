@@ -17,6 +17,10 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "shares"
+    },
+    "count": {
+      "type": "integer",
+      "default": 0
     }
   }
 }
