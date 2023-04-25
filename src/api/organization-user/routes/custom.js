@@ -26,6 +26,15 @@ module.exports = {
                 policies: [],
                 middleware: [],
             }
+        },
+        {
+            method:"GET",
+            path :"/findCustom",
+            handler:"custom.findCustom",
+            config: {
+                policies: [],
+                middleware: [],
+            }
         }
     ]
 }

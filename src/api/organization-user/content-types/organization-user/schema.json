@@ -42,15 +42,22 @@
       "relation": "oneToOne",
       "target": "plugin::users-permissions.role"
     },
-    "multi_tenant_organization": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::multi-tenant.organization"
-    },
     "multi_tenant_user_group": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::multi-tenant.user-group"
+    },
+    "token": {
+      "type": "string"
+    },
+    "Organization": {
+      "type": "string"
+    },
+    "user_of_org_users": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-of-org-user.user-of-org-user",
+      "mappedBy": "organization_user"
     }
   }
 }

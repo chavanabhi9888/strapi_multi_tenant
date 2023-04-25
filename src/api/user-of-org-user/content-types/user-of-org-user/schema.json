@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_of_org_users",
+  "info": {
+    "singularName": "user-of-org-user",
+    "pluralName": "user-of-org-users",
+    "displayName": "user of org-user"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "role": {
+      "type": "string"
+    },
+    "organization_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::organization-user.organization-user",
+      "inversedBy": "user_of_org_users"
+    }
+  }
+}
