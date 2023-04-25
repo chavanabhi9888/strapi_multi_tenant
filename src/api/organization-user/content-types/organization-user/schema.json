@@ -31,17 +31,26 @@
       "type": "boolean",
       "default": false
     },
-    "organization": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::organization.organization",
-      "inversedBy": "organization_users"
-    },
     "opportunities": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::opportunity.opportunity",
       "mappedBy": "organization_user"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.role"
+    },
+    "multi_tenant_organization": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::multi-tenant.organization"
+    },
+    "multi_tenant_user_group": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::multi-tenant.user-group"
     }
   }
 }

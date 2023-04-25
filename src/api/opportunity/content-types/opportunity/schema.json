@@ -12,12 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "organization": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::organization.organization",
-      "inversedBy": "opportunities"
-    },
     "organization_user": {
       "type": "relation",
       "relation": "manyToOne",
@@ -34,11 +28,11 @@
     },
     "profile": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "skills": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "opportunity_type": {
       "type": "enumeration",
@@ -46,11 +40,11 @@
         "internship",
         "volunteer"
       ],
-      "required": true
+      "required": false
     },
     "city": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "state": {
       "type": "customField",
@@ -98,7 +92,7 @@
     },
     "part_time": {
       "type": "boolean",
-      "required": true
+      "required": false
     },
     "openings": {
       "type": "integer",
@@ -113,23 +107,23 @@
     },
     "start_on": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "end_on": {
       "type": "date",
-      "required": true
+      "required": false
     },
     "duration": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "months": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "responsibilities": {
       "type": "text",
-      "required": true
+      "required": false
     },
     "stipend_type": {
       "type": "enumeration",
@@ -142,7 +136,7 @@
     },
     "currency": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "stipend_value": {
       "type": "decimal",
@@ -150,7 +144,7 @@
     },
     "payment_type": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "perks": {
       "type": "text",
@@ -170,19 +164,19 @@
     },
     "assessment_questions": {
       "type": "text",
-      "required": true
+      "required": false
     },
     "facilities": {
       "type": "text",
-      "required": true
+      "required": false
     },
     "support": {
       "type": "text",
-      "required": true
+      "required": false
     },
     "terms": {
       "type": "text",
-      "required": true
+      "required": false
     },
     "tags": {
       "type": "relation",

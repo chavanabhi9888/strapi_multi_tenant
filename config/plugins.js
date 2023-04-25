@@ -1,4 +1,7 @@
 module.exports = ({ env }) => ({
+  'multi-tenant': {
+    enabled: true,
+  },
   upload: {
     config: {
       provider: "cloudinary",
