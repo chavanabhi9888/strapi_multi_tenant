@@ -29,8 +29,26 @@ module.exports = {
         },
         {
             method:"GET",
-            path :"/findCustom",
-            handler:"custom.findCustom",
+            path :"/:slug",
+            handler:"custom.find_organization_user",
+            config: {
+                policies: [],
+                middleware: [],
+            }
+        },
+        {
+            method:"GET",
+            path :"/users/:id",
+            handler:"custom.get_user",
+            config: {
+                policies: [],
+                middleware: [],
+            }
+        },
+        {
+            method:"GET",
+            path :"/test/:id",
+            handler:"custom.function",
             config: {
                 policies: [],
                 middleware: [],

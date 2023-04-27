@@ -58,6 +58,10 @@
       "relation": "oneToMany",
       "target": "api::user-of-org-user.user-of-org-user",
       "mappedBy": "organization_user"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "Organization"
     }
   }
 }

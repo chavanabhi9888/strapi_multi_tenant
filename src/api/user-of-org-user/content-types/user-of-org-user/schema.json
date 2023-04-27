@@ -4,7 +4,8 @@
   "info": {
     "singularName": "user-of-org-user",
     "pluralName": "user-of-org-users",
-    "displayName": "user of org-user"
+    "displayName": "user of org-user",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -25,6 +26,10 @@
       "relation": "manyToOne",
       "target": "api::organization-user.organization-user",
       "inversedBy": "user_of_org_users"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
     }
   }
 }

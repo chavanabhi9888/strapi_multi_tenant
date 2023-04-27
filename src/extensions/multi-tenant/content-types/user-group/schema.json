@@ -24,8 +24,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::multi-tenant.organization",
-      "inversedBy": "userGroups",
-      "required": true
+      "inversedBy": "userGroups"
     }
   }
 }

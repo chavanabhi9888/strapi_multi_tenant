@@ -14,6 +14,7 @@ const { createCoreController } = require('@strapi/strapi').factories;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { connect } = require("../../../../config/pg");
+const { verifytoken } = require("../../../../config/middleware");
 
 
 
@@ -54,7 +55,28 @@ module.exports = createCoreController('api::organization-user.organization-user'
     `;
     const data = await client.query(query,[token,email]);
       // Send response
-      ctx.send({"login successful....":token , user });
+      ctx.send({"login successful....":token , user:user.Organization });
+    //   try {
+    //     const client = await connect();
+    //     const query = 
+    //   `SELECT * from organizations where name = $1`;
+    //   const data = await client.query(query, [user.Organization]);
+    //     if(data){
+    //       const query = 
+    //     `SELECT * from organization_users where organization = $1`;
+      
+  
+    //     const data = await client.query(query, [user.Organization]);
+      //   ctx.send({
+      //     "data": data.rows
+      //   });
+      //   } else {
+      //     return ctx.badRequest('Organization user not found', { Organization_user : "organization_user"})
+      //   }
+      
+      // } catch (error) {
+      //   console.log(error);
+      // }
   },
 
 
@@ -82,8 +104,6 @@ module.exports = createCoreController('api::organization-user.organization-user'
       const query = 
     //   INSERT INTO admin_users (firstname, lastname, username, email, password, is_active, blocked)
     //   VALUES ('Dhanashree', 'mule', 'Dhanoooo', 'Dhanashree@geexu.in', 'Pass@1', true, false);
-    //   INSERT INTO admin_users (firstname, lastname, username, email, password, is_active, blocked)
-    //   VALUES ('Dhanashree', 'mule', 'Dhanoooo', 'Dhanashree@geexu.in', 'Pass@1', true, false);
       `
       INSERT INTO admin_users_roles_links (user_id, role_id)
       VALUES (4,2);
@@ -100,27 +120,50 @@ module.exports = createCoreController('api::organization-user.organization-user'
 
 
 
-  async findCustom(ctx) {
+  async find_organization_user(ctx) {
     try {
       const client = await connect();
       const query = 
     `SELECT * from organizations where name = $1`;
-    const data = await client.query(query, [ctx.query.Organization]);
-      if(data){
+    const data = await client.query(query, [ctx.params.slug]);
+      if(data.rows.length){
         const query = 
-      `SELECT * from organization_users where organization = $1`;
+            `SELECT * from organization_users where organization = $1`;
     
-
-      const data = await client.query(query, [ctx.query.Organization]);
-      ctx.send({
-        data: data.rows
-      });
+        const data1 = await client.query(query, [ctx.params.slug]);
+        ctx.send({
+          "data": data1.rows
+        });
       } else {
-        return ctx.badRequest('Organization user not found', { Organization_user : "organization_user"})
+        return ctx.badRequest('Organization user not found', { "Organization_user" : ctx.params.slug})
       }
     
     } catch (error) {
       console.log(error);
     }
+  },
+
+  async get_user(ctx) {
+      const client = await connect();
+      const query = 
+              `SELECT
+              ufougul.user_of_org_user_id AS "user_id",
+              ufou.name,
+              ufou.email,
+              ufou.role
+              FROM user_of_org_users_organization_user_links ufougul
+              LEFT JOIN user_of_org_users ufou ON ufou.id = ufougul.user_of_org_user_id
+              WHERE ufougul.organization_user_id = $1;
+              `;
+    const data = await client.query(query, [ctx.params.id]);
+      ctx.send({
+        "data": data.rows
+      });
+  },  
+  async function(ctx) {
+    const data = ctx.params.id;
+    ctx.send({
+      "data":data
+    })
   }
   }));

@@ -2630,6 +2630,16 @@
     "require-from-string" "^2.0.2"
     "uri-js" "^4.2.2"
 
+"ajv@^8.6.2":
+  "integrity" "sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA=="
+  "resolved" "https://registry.npmjs.org/ajv/-/ajv-8.12.0.tgz"
+  "version" "8.12.0"
+  dependencies:
+    "fast-deep-equal" "^3.1.1"
+    "json-schema-traverse" "^1.0.0"
+    "require-from-string" "^2.0.2"
+    "uri-js" "^4.2.2"
+
 "ajv@^8.8.0", "ajv@^8.8.2":
   "integrity" "sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA=="
   "resolved" "https://registry.npmjs.org/ajv/-/ajv-8.12.0.tgz"
@@ -3876,6 +3886,11 @@
   "integrity" "sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA=="
   "resolved" "https://registry.npmjs.org/date-fns/-/date-fns-2.29.3.tgz"
   "version" "2.29.3"
+
+"db-errors@^0.2.3":
+  "integrity" "sha512-OOgqgDuCavHXjYSJoV2yGhv6SeG8nk42aoCSoyXLZUH7VwFG27rxbavU1z+VrZbZjphw5UkDQwUlD21MwZpUng=="
+  "resolved" "https://registry.npmjs.org/db-errors/-/db-errors-0.2.3.tgz"
+  "version" "0.2.3"
 
 "debug@^2.2.0":
   "integrity" "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="
@@ -6113,6 +6128,26 @@
   "resolved" "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz"
   "version" "6.0.3"
 
+"knex@^2.4.2", "knex@>=0.95.0":
+  "integrity" "sha512-tMI1M7a+xwHhPxjbl/H9K1kHX+VncEYcvCx5K00M16bWvpYPKAZd6QrCu68PtHAdIZNQPWZn0GVhqVBEthGWCg=="
+  "resolved" "https://registry.npmjs.org/knex/-/knex-2.4.2.tgz"
+  "version" "2.4.2"
+  dependencies:
+    "colorette" "2.0.19"
+    "commander" "^9.1.0"
+    "debug" "4.3.4"
+    "escalade" "^3.1.1"
+    "esm" "^3.2.25"
+    "get-package-type" "^0.1.0"
+    "getopts" "2.3.0"
+    "interpret" "^2.2.0"
+    "lodash" "^4.17.21"
+    "pg-connection-string" "2.5.0"
+    "rechoir" "^0.8.0"
+    "resolve-from" "^5.0.0"
+    "tarn" "^3.0.2"
+    "tildify" "2.0.0"
+
 "knex@2.4.0":
   "integrity" "sha512-i0GWwqYp1Hs2yvc2rlDO6nzzkLhwdyOZKRdsMTB8ZxOs2IXQyL5rBjSbS1krowCh6V65T4X9CJaKtuIfkaPGSA=="
   "resolved" "https://registry.npmjs.org/knex/-/knex-2.4.0.tgz"
@@ -7118,6 +7153,14 @@
   "version" "1.3.0"
   dependencies:
     "isobject" "^3.0.1"
+
+"objection@^3.0.1":
+  "integrity" "sha512-rqNnyQE+C55UHjdpTOJEKQHJGZ/BGtBBtgxdUpKG4DQXRUmqxfmgS/MhPWxB9Pw0mLSVLEltr6soD4c0Sddy0Q=="
+  "resolved" "https://registry.npmjs.org/objection/-/objection-3.0.1.tgz"
+  "version" "3.0.1"
+  dependencies:
+    "ajv" "^8.6.2"
+    "db-errors" "^0.2.3"
 
 "oblivious-set@1.0.0":
   "integrity" "sha512-z+pI07qxo4c2CulUHCDf9lcqDlMSo72N/4rLUpRXf6fu+q8vjt8y0xS+Tlf8NTJDdTXHbdeO1n3MlbctwEoXZw=="
