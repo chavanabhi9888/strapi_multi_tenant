@@ -35,8 +35,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
       where: { email: email }
     });
 
-    
-
+  
     if (!user) {
       return ctx.badRequest('User not found');
     }
