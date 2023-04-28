@@ -50,8 +50,8 @@
     "token": {
       "type": "string"
     },
-    "Organization": {
-      "type": "string"
+    "slug": {
+      "type": "uid"
     },
     "user_of_org_users": {
       "type": "relation",
@@ -59,9 +59,10 @@
       "target": "api::user-of-org-user.user-of-org-user",
       "mappedBy": "organization_user"
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "Organization"
+    "multi_tenant_organization": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::multi-tenant.organization"
     }
   }
 }

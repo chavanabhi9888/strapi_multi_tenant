@@ -47,7 +47,7 @@ module.exports = {
         },
         {
             method:"GET",
-            path :"/test/:id",
+            path :"/test/:slug",
             handler:"custom.function",
             config: {
                 policies: [],

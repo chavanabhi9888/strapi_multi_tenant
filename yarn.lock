@@ -1956,7 +1956,7 @@
     "@strapi/utils" "4.9.1"
     "fs-extra" "10.0.0"
 
-"@strapi/strapi@^4.3.4", "@strapi/strapi@^4.4.0", "@strapi/strapi@4.9.1":
+"@strapi/strapi@^4.0.7", "@strapi/strapi@^4.3.4", "@strapi/strapi@^4.4.0", "@strapi/strapi@4.9.1":
   "integrity" "sha512-IRiR0jteDdlcZjeOWwSh+URav9I5V7d3yHuanGlQYMAb3V1blOHXWNcmXIEmbegr+DMoQ4EnDdZNqiVPRvPVJg=="
   "resolved" "https://registry.npmjs.org/@strapi/strapi/-/strapi-4.9.1.tgz"
   "version" "4.9.1"
@@ -2028,7 +2028,7 @@
     "prettier" "2.8.4"
     "typescript" "4.6.2"
 
-"@strapi/utils@4.9.1":
+"@strapi/utils@^4.0.7", "@strapi/utils@4.9.1":
   "integrity" "sha512-FC6iIyHc5OMu46soiQPnmdrfkBsYKrBhogmYMqDwwqwTbT7ynXL2EgRz1T8/Y0Zb8YvjvWcaOYYF17AhWB9Mug=="
   "resolved" "https://registry.npmjs.org/@strapi/utils/-/utils-4.9.1.tgz"
   "version" "4.9.1"
@@ -9032,6 +9032,13 @@
   "integrity" "sha512-ZqOw8Hn1GqKhDMk8fdbAvDoESQ0zwtVYpGJB12saOE2hU/hmGPZUy7JEos43vMJAWgVXnvnpNi/SlQgbBh7e5Q=="
   "resolved" "https://registry.npmjs.org/strapi-plugin-multi-tenant/-/strapi-plugin-multi-tenant-1.0.4.tgz"
   "version" "1.0.4"
+
+"strapi-plugin-slugify@^2.3.2":
+  "integrity" "sha512-gZbZ+jdZYmSjjCdNR5WEhAcF7cokAX3wGlz7+vVgGpsp/ayvZACyWQzyqgfHbbqzjVtPFOi40Clp0OeRtfCHGg=="
+  "resolved" "https://registry.npmjs.org/strapi-plugin-slugify/-/strapi-plugin-slugify-2.3.2.tgz"
+  "version" "2.3.2"
+  dependencies:
+    "@sindresorhus/slugify" "1.1.0"
 
 "stream-chain@^2.2.5", "stream-chain@2.2.5":
   "integrity" "sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA=="

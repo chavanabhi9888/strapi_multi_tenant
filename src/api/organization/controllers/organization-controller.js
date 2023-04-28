@@ -1,5 +1,41 @@
+const { connect } = require("../../../../config/pg");
+
+
+
 module.exports = {
     //fetching all the posts
+
+  async create(ctx) {
+    const { Organization  } = ctx.request.body;
+    const client = await connect();
+    const query = `
+        INSERT INTO organizations (name) VALUES ($1)
+      `;
+    const data = await client.query(query,[ Organization ]);
+        ctx.send({
+          "data":data.rows
+        })
+  },
+  async find_organization(ctx) {
+    try {
+      const client = await connect();
+      const query = 
+    `SELECT * from organizations where name = $1`;
+    const data = await client.query(query, [ctx.params.slug]);
+      if(data.rows.length){
+        ctx.send({
+          "data": data.rows
+        });
+      } else {
+        return ctx.badRequest('Organization not found', { "Organization" : ctx.params.slug})
+      }
+    
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+
     async delete(ctx) {
       try {
         const client = await connect();
@@ -43,3 +79,4 @@ module.exports = {
       }
     },
 };
+

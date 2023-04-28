@@ -2,6 +2,17 @@ module.exports = ({ env }) => ({
   'multi-tenant': {
     enabled: true,
   },
+  slugify: {
+    enabled: true,
+    config: {
+      contentTypes: {
+        article: {
+          field: 'slug',
+          references: 'title',
+        },
+      },
+    },
+  },
   upload: {
     config: {
       provider: "cloudinary",

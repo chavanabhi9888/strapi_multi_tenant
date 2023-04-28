@@ -55,27 +55,6 @@ module.exports = createCoreController('api::organization-user.organization-user'
     const data = await client.query(query,[token,email]);
       // Send response
       ctx.send({"login successful....":token , user:user.Organization });
-    //   try {
-    //     const client = await connect();
-    //     const query = 
-    //   `SELECT * from organizations where name = $1`;
-    //   const data = await client.query(query, [user.Organization]);
-    //     if(data){
-    //       const query = 
-    //     `SELECT * from organization_users where organization = $1`;
-      
-  
-    //     const data = await client.query(query, [user.Organization]);
-      //   ctx.send({
-      //     "data": data.rows
-      //   });
-      //   } else {
-      //     return ctx.badRequest('Organization user not found', { Organization_user : "organization_user"})
-      //   }
-      
-      // } catch (error) {
-      //   console.log(error);
-      // }
   },
 
 
@@ -160,9 +139,29 @@ module.exports = createCoreController('api::organization-user.organization-user'
       });
   },  
   async function(ctx) {
-    const data = ctx.params.id;
-    ctx.send({
-      "data":data
-    })
+    try {
+      const client = await connect();
+        const query = 
+            `SELECT
+            oul.organization_user_id AS "organizationUserID",
+            ou.first_name AS "organizationUserFirstName",
+            uoou.id AS "userOfOrganizationUserID",
+            uoou.name AS "userOfOrganizationUserName",
+            uoou.email AS "userOfOrganizationUserEmail",
+            uoou.role AS "userOfOrganizationUserRole"
+            
+            FROM user_of_org_users uoou
+            LEFT JOIN user_of_org_users_organization_user_links oul ON uoou.id = oul.user_of_org_user_id
+            LEFT JOIN organization_users ou ON ou.id = oul.organization_user_id
+            WHERE ou.first_name LIKE $1 `;
+    
+        const data1 = await client.query(query, [ctx.params.slug]);
+        ctx.send({
+          "data": data1.rows  
+        });
+    
+    } catch (error) {
+      console.log(error);
+    }
   }
   }));
