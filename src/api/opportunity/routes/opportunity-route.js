@@ -94,6 +94,15 @@ module.exports = {
           middleware: [],
         },
       },
+      {
+        method: "GET",
+        path: "/:slug",
+        handler: "opportunity-controller.get_opportunity",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
 //--------------------------------------------------------------------------------------
       //apply Opportunity
       // {

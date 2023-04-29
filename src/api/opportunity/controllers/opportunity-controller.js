@@ -452,6 +452,29 @@ module.exports = {
       console.log(error);
     }
   },
+  async get_opportunity(ctx) {
+    try {
+      const client = await connect();
+        const query = 
+            `SELECT
+            ou.id AS "organizationUserID",
+            ou.first_name AS "OrganizationUserName",
+            ooul.opportunity_id AS "OpportunityID",
+            o.profile AS "OpportunityProfile"
+            FROM opportunities o
+            LEFT JOIN opportunities_organization_user_links ooul ON o.id = ooul.opportunity_id
+            LEFT JOIN organization_users ou ON ou.id = ooul.organization_user_id
+            WHERE ou.first_name LIKE $1 `;
+    
+        const data1 = await client.query(query, [ctx.params.slug]);
+        ctx.send({
+          "data": data1.rows  
+        });
+    
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   //Here the user will be able to apply to opportunities
   // async applyOpportunity(ctx) {

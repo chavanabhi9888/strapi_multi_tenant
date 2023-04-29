@@ -210,6 +210,9 @@
       "relation": "oneToMany",
       "target": "api::save.save",
       "mappedBy": "opportunity"
+    },
+    "slug": {
+      "type": "uid"
     }
   }
 }

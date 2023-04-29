@@ -104,16 +104,24 @@ module.exports = createCoreController('api::organization-user.organization-user'
       const query = 
     `SELECT * from organizations where name = $1`;
     const data = await client.query(query, [ctx.params.slug]);
-      if(data.rows.length){
+      if(data.rows.length>0){
         const query = 
-            `SELECT * from organization_users where organization = $1`;
+            `SELECT
+            ou.id,
+            ou.first_name,
+            o.name
+            FROM
+            organization_users ou
+            LEFT JOIN organization_users_multi_tenant_organization_links oumt ON ou.id = oumt.organization_user_id
+            LEFT JOIN organizations o ON o.id = oumt.organization_id
+            WHERE o.name LIKE $1;`
     
         const data1 = await client.query(query, [ctx.params.slug]);
         ctx.send({
           "data": data1.rows
         });
       } else {
-        return ctx.badRequest('Organization user not found', { "Organization_user" : ctx.params.slug})
+        return ctx.badRequest('Organization not found', { "Organization" : ctx.params.slug})
       }
     
     } catch (error) {
@@ -138,7 +146,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
         "data": data.rows
       });
   },  
-  async function(ctx) {
+  async get_user_created_by_org_user(ctx) {
     try {
       const client = await connect();
         const query = 
