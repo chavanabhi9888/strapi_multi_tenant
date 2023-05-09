@@ -11,13 +11,22 @@ module.exports = {
       },
       {
         method: "GET",
-        path: "/:slug",
+        path: "/organization/:slug",
         handler: "organization-controller.find_organization",
         config: {
           policies: [],
           middleware: [],
         },
       },
+      // {
+      //   method: "GET",
+      //   path: "/organizations/",
+      //   handler: "organization-controller.find_all_organization",
+      //   config: {
+      //     policies: [],
+      //     middleware: [],
+      //   },
+      // },
       {
         method: "DELETE",
         path: "/delete",

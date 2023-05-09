@@ -103,6 +103,44 @@ module.exports = {
           middleware: [],
         },
       },
+      {
+        method: "GET",
+        path: "/opportunities/:slug",
+        handler: "opportunity-controller.find_organization_opportunity",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
+
+      {
+        method: "GET",
+        path: "/organizations/:id",
+        handler: "opportunity-controller.get_organization_opportunity_for_organization_user",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
+
+      {
+        method: "GET",
+        path: "/opportunities/find/all",
+        handler: "opportunity-controller.find_all_opportunities",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
+      {
+        method: "GET",
+        path: "/opportunities/orguser/all",
+        handler: "opportunity-controller.find_organizations_of_opportunity",
+        config: {
+          policies: [],
+          middleware: [], 
+        },
+      },
 //--------------------------------------------------------------------------------------
       //apply Opportunity
       // {

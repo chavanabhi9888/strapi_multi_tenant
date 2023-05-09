@@ -12,13 +12,22 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
+    "firstname": {
       "type": "string"
     },
     "email": {
       "type": "email"
     },
-    "role": {
+    "slug": {
+      "type": "uid"
+    },
+    "lastname": {
+      "type": "string"
+    },
+    "password": {
+      "type": "password"
+    },
+    "username": {
       "type": "string"
     },
     "organization_user": {
@@ -26,10 +35,6 @@
       "relation": "manyToOne",
       "target": "api::organization-user.organization-user",
       "inversedBy": "user_of_org_users"
-    },
-    "slug": {
-      "type": "uid",
-      "targetField": "name"
     }
   }
 }

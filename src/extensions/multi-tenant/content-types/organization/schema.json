@@ -20,6 +20,10 @@
       "relation": "manyToMany",
       "target": "plugin::multi-tenant.user-group",
       "inversedBy": "organizations"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
     }
   }
 }

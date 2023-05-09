@@ -12,12 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "organization_user": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::organization-user.organization-user",
-      "inversedBy": "opportunities"
-    },
     "image": {
       "type": "media",
       "multiple": false,
@@ -211,8 +205,11 @@
       "target": "api::save.save",
       "mappedBy": "opportunity"
     },
-    "slug": {
-      "type": "uid"
+    "organization_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::organization-user.organization-user",
+      "inversedBy": "opportunities"
     }
   }
 }

@@ -1,4 +1,6 @@
 const { connect } = require("../../../../config/pg");
+const  verifyToken  = require("../../../../config/middleware");
+
 
 module.exports = {
   //dashboard
@@ -454,28 +456,175 @@ module.exports = {
   },
   async get_opportunity(ctx) {
     try {
+      const user = await strapi.db.query('api::organization-user.organization-user').findOne({
+        where: { firstname: ctx.params.slug }
+      });
+      if (user){
       const client = await connect();
         const query = 
             `SELECT
-            ou.id AS "organizationUserID",
-            ou.first_name AS "OrganizationUserName",
+            ou.id AS "OrganizationUserID",
+            ou.firstname AS "OrganizationUserName",
             ooul.opportunity_id AS "OpportunityID",
             o.profile AS "OpportunityProfile"
             FROM opportunities o
             LEFT JOIN opportunities_organization_user_links ooul ON o.id = ooul.opportunity_id
             LEFT JOIN organization_users ou ON ou.id = ooul.organization_user_id
-            WHERE ou.first_name LIKE $1 `;
-    
+            WHERE ou.firstname LIKE $1 `;
+                                              
         const data1 = await client.query(query, [ctx.params.slug]);
         ctx.send({
           "data": data1.rows  
         });
+      }else{
+        ctx.send({"error":"User not found"})
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async find_organization_opportunity(ctx) {
+    try {
+      const client = await connect();
+      const query = 
+          `SELECT
+          o.id,
+          o.name,
+          ou.id AS "organization user id",
+          opp.id AS "opportunity_id",
+          opp.profile,
+          opp.skills,
+          opp.openings,
+          opp.stipend_value
+          FROM
+          organizations o
+          LEFT JOIN organization_users_multi_tenant_organization_links mto ON o.id = mto.organization_id
+          LEFT JOIN organization_users ou ON ou.id = mto.organization_user_id
+          LEFT JOIN opportunities_organization_user_links ooul ON ou.id = ooul.organization_user_id
+          LEFT JOIN opportunities opp ON opp.id = ooul.opportunity_id
+          WHERE
+          o.name LIKE $1 AND opp.id IS NOT NULL
+          GROUP BY
+          o.id,
+          ou.id,
+          opp.id,
+          o.name,
+          opp.profile,
+          opp.skills,
+          opp.openings,
+          opp.stipend_value`;
+    const data = await client.query(query, [ctx.params.slug]);
+      if(data.rows.length>0){
+        ctx.send({  
+          "data": data.rows
+        });
+      } else {
+        return ctx.badRequest('Data not found', { "Data" : data.rows})
+      }
     
     } catch (error) {
       console.log(error);
     }
-  }
+  },
 
+  async get_organization_opportunity_for_organization_user(ctx) {
+    try {
+      await verifyToken(ctx, async () => {
+      const client = await connect();
+      const query = 
+            `SELECT
+            opp.id,
+            opp.profile,
+            opp.stipend_value,
+            mto.organization_id
+          FROM opportunities opp
+          LEFT JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
+          LEFT JOIN organization_users_multi_tenant_organization_links mto ON ooul.organization_user_id = mto.organization_user_id
+          WHERE mto.organization_id = (
+            SELECT org.id
+            FROM organizations org
+            LEFT JOIN organization_users_multi_tenant_organization_links mto ON mto.organization_id = org.id
+            WHERE mto.organization_user_id = $1
+        );`;
+    const data = await client.query(query, [ctx.params.id]);
+      if(data.rows.length>0){
+        ctx.send({  
+          "data": data.rows
+        });
+      } else {
+        return ctx.badRequest('Organization_user not found', { "Organization user" : ctx.params.id})
+      }
+    });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async find_organizations_of_opportunity(ctx) {
+    try {
+      await verifyToken(ctx, async () => {
+          const client = await connect();
+          const query = 
+              `SELECT
+              o.id,
+              o.name,
+              ou.id AS "organization user id",
+              opp.id AS "opportunity_id",
+              opp.profile,
+              opp.skills,
+              opp.openings,
+              opp.stipend_value
+              FROM
+              organizations o
+              LEFT JOIN organization_users_multi_tenant_organization_links mto ON o.id = mto.organization_id
+              LEFT JOIN organization_users ou ON ou.id = mto.organization_user_id
+              LEFT JOIN opportunities_organization_user_links ooul ON ou.id = ooul.organization_user_id
+              LEFT JOIN opportunities opp ON opp.id = ooul.opportunity_id
+              WHERE
+              o.name LIKE $1 AND opp.id IS NOT NULL
+              GROUP BY
+              o.id,
+              ou.id,
+              opp.id,
+              o.name,
+              opp.profile,
+              opp.skills,
+              opp.openings,
+              opp.stipend_value`;
+      const data = await client.query(query, [ctx.state.user.multi_tenant_organization.name]);
+      if(data.rows.length>0){
+        ctx.send({  
+          "data": data.rows
+        });
+      } else {
+        return ctx.badRequest('Data not found', { "Data" : []})
+      }
+    });
+    
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async find_all_opportunities(ctx) {
+    try {
+      const client = await connect();
+      const query = 
+          `SELECT * FROM opportunities
+          ORDER BY id ASC 
+          `;
+      const data = await client.query(query);
+      if(data.rows.length>0){
+        ctx.send({  
+          "data": data.rows
+        });
+      } else {
+        return ctx.badRequest('Data not found', { "Data" : data.rows})
+      }
+    
+    } catch (error) {
+      console.log(error);
+    }
+  },
   //Here the user will be able to apply to opportunities
   // async applyOpportunity(ctx) {
   //   try {

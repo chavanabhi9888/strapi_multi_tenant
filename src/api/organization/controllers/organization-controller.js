@@ -6,7 +6,7 @@ module.exports = {
     //fetching all the posts
 
   async create(ctx) {
-    const { Organization  } = ctx.request.body;
+    const { Organization  } = ctx.request.body.data;
     const client = await connect();
     const query = `
         INSERT INTO organizations (name) VALUES ($1)
@@ -22,8 +22,8 @@ module.exports = {
       const query = 
     `SELECT * from organizations where name = $1`;
     const data = await client.query(query, [ctx.params.slug]);
-      if(data.rows.length){
-        ctx.send({
+      if(data.rows.length>0){
+        ctx.send({  
           "data": data.rows
         });
       } else {
@@ -34,7 +34,26 @@ module.exports = {
       console.log(error);
     }
   },
-
+  // async find_all_organization(ctx) {
+  //   try {
+  //     const client = await connect();
+  //     const query = 
+  //         `SELECT * FROM organizations
+  //         ORDER BY id ASC 
+  //         `;
+  //     const data = await client.query(query);
+  //     if(data.rows.length>0){
+  //       ctx.send({  
+  //         "data": data.rows
+  //       });
+  //     } else {
+  //       return ctx.badRequest('Data not found', { "Data" : data.rows})
+  //     }
+    
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
 
     async delete(ctx) {
       try {

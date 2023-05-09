@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_verify_users",
+  "info": {
+    "displayName": "user",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "user1": {
+      "type": "string"
+    }
+  }
+}

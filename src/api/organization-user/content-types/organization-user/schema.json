@@ -12,10 +12,10 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "first_name": {
+    "firstname": {
       "type": "string"
     },
-    "last_name": {
+    "lastname": {
       "type": "string"
     },
     "phone": {
@@ -30,12 +30,6 @@
     "isDeleted": {
       "type": "boolean",
       "default": false
-    },
-    "opportunities": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::opportunity.opportunity",
-      "mappedBy": "organization_user"
     },
     "users_permissions_user": {
       "type": "relation",
@@ -53,16 +47,22 @@
     "slug": {
       "type": "uid"
     },
+    "multi_tenant_organization": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::multi-tenant.organization"
+    },
+    "opportunities": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::opportunity.opportunity",
+      "mappedBy": "organization_user"
+    },
     "user_of_org_users": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::user-of-org-user.user-of-org-user",
       "mappedBy": "organization_user"
-    },
-    "multi_tenant_organization": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::multi-tenant.organization"
     }
   }
 }

@@ -19,18 +19,9 @@ module.exports = {
             }
         },
         {
-            method:"POST",
-            path :"/setrole",
-            handler:"custom.find",
-            config: {
-                policies: [],
-                middleware: [],
-            }
-        },
-        {
             method:"GET",
             path :"/:slug/orguser",
-            handler:"custom.find_organization_user",
+            handler:"custom.find_organizations_user",
             config: {
                 policies: [],
                 middleware: [],
@@ -47,12 +38,29 @@ module.exports = {
         },
         {
             method:"GET",
-            path :"/test/:slug",
-            handler:"custom.function",
+            path :"/user/:slug",
+            handler:"custom.get_user_created_by_org_user",
             config: {
                 policies: [],
                 middleware: [],
             }
-        }
+        },
+        {
+            method:"GET",
+            path :"/organization_users/all",
+            handler:"custom.find_all_organization_user",
+            config: {
+                policies: [],
+                middleware: [],
+            }
+        },
+        {
+            "method": "POST",
+            "path": "/auth/logout",
+            "handler": "custom.logout",
+            "config": {
+              "policies": []
+            }
+          }
     ]
 }

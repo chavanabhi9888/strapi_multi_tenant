@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_verify_orgnames",
+  "info": {
+    "displayName": "orgname",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
