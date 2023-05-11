@@ -12,11 +12,60 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 const { connect } = require("../../../../config/pg");
 const  verifyToken  = require("../../../../config/middleware");
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 
 
 module.exports = createCoreController('api::user-of-org-user.user-of-org-user',({strapi})=>({
+  // async login(ctx) {
+  //   const { email, password } = ctx.request.body;
+  //   const body = ctx.request.body
+  //   // Check if email and password are provided
+  //   if (!email || !password) {
+  //     return ctx.badRequest('Please provide email and password');
+  //   }
+    
+  //   // // Find the user with the provided email
+    
+  //   const user = await strapi.db.query('api::user-of-org-user.user-of-org-user').findOne({
+  //     where: {
+  //       email
+  //     },
+  //    populate: true,
+  //   })
+
+  //   const role = await strapi.db.query('admin::user').findOne({
+  //     where: {
+  //       email
+  //     },
+  //    populate: ["roles"],
+  //   })
+
+  
+  //   if (!user) {
+  //     return ctx.badRequest('User not found');
+  //   }
+    
+  //   bcrypt.compare(ctx.request.body.password, function(err, result) {
+  //     if (result) {
+  //       return ctx.badRequest("password is incorrect");
+  //     }
+  //     });
+      
+  //     // // Generate JWT token
+  //     const token = jwt.sign({ id:role.id, role_id:role.roles[0].id }, process.env.JWT_SECRET);
+  //     const client = await connect();
+  //     const query = 
+  //       `UPDATE user_of_org_users SET token = $1 where email = $2`;
+  //     const data = await client.query(query,[token,email]);
+  //     const query1 = 
+  //         `SELECT * from user_of_org_users where email = $1`;
+  //     const data1 = await client.query(query1,[email]);
+  //     // Send response
+  //     ctx.send({ "data":data1.rows });
+  // },
+
 async set_role_user(ctx) {
     try {
       const { firstname,lastname, email, password ,username, is_active, blocked, role } = ctx.request.body.data;
@@ -44,7 +93,7 @@ async set_role_user(ctx) {
 
               const data1 = await client.query(query1, [role]);
               ctx.send({
-                "data":data.rows , "data1":data1.rows, "user":response
+               "user":response
               });
     }
     } catch (error) {
@@ -76,5 +125,45 @@ async set_role_user(ctx) {
       } catch (error) {
         console.log(error);
       }
-    }
+    },
+    // async Get_all_permission(ctx) {
+    //   try {
+    //     await verifyToken(ctx, async () => {
+    //       const users = await strapi.db.query('admin::role').findMany({
+    //         where: {
+    //           id:ctx.state.user.roles[0].id
+    //         },
+    //        populate: ["permissions"],
+    //       })
+  
+    //           const allUsers = [];
+    //           for (const user of users) {
+    //             if (user.hasOwnProperty('permissions')) {
+    //               allUsers.push(...user.permissions);
+    //             }
+    //           }
+    //     // console.log(ctx.state.user.roles[0].id);
+          
+    //       ctx.send({  
+    //         "data": allUsers
+    //       });
+    //     });
+  
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },
+    //   async logout(ctx) {
+    //     try {
+    //       // Clear the session and cookies on the server side
+    //       ctx.cookies.set('jwt', null, { httpOnly: true, maxAge: 0 });
+    //       ctx.session = null;
+      
+    //       ctx.send({
+    //         message: 'Logged out successfully.'
+    //       });
+    //     } catch (error) {
+    //       ctx.throw(500, 'Unable to logout.');
+    //     }
+    //   },
 }));

@@ -35,6 +35,9 @@
       "relation": "manyToOne",
       "target": "api::organization-user.organization-user",
       "inversedBy": "user_of_org_users"
+    },
+    "token": {
+      "type": "string"
     }
   }
 }

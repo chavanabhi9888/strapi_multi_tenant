@@ -12,7 +12,7 @@ module.exports = async (ctx, next) => {
         // get the authorization header from the request
         const authHeader = ctx.request.header.authorization;
 
-        // console.log("token",authHeader);
+        console.log("token",authHeader);
 
         // if no authorization header is provid   ed, return an error
         if (!authHeader) {
@@ -25,7 +25,7 @@ module.exports = async (ctx, next) => {
 
         // extract the token from the authorization header
         const token = authHeader.split(' ')[2];
-        // console.log("token1", token);
+        console.log("token1", token);
             
             // verify the token and decode its payload
             const payload = jwt.verify(token, process.env.JWT_SECRET);
@@ -53,6 +53,7 @@ module.exports = async (ctx, next) => {
 
             // set the authenticated user in the context state
             ctx.state.user = users;
+
     } catch (err) {
             // if the token is invalid or has expired, return an error
             ctx.status = 401;

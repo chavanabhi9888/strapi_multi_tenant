@@ -456,6 +456,7 @@ module.exports = {
   },
   async get_opportunity(ctx) {
     try {
+      await verifyToken(ctx, async () => {
       const user = await strapi.db.query('api::organization-user.organization-user').findOne({
         where: { firstname: ctx.params.slug }
       });
@@ -479,48 +480,53 @@ module.exports = {
       }else{
         ctx.send({"error":"User not found"})
       }
+    });
     } catch (error) {
       console.log(error);
     }
   },
   async find_organization_opportunity(ctx) {
     try {
+      await verifyToken(ctx, async () => {
       const client = await connect();
-      const query = 
-          `SELECT
-          o.id,
-          o.name,
-          ou.id AS "organization user id",
-          opp.id AS "opportunity_id",
-          opp.profile,
-          opp.skills,
-          opp.openings,
-          opp.stipend_value
-          FROM
-          organizations o
-          LEFT JOIN organization_users_multi_tenant_organization_links mto ON o.id = mto.organization_id
-          LEFT JOIN organization_users ou ON ou.id = mto.organization_user_id
-          LEFT JOIN opportunities_organization_user_links ooul ON ou.id = ooul.organization_user_id
-          LEFT JOIN opportunities opp ON opp.id = ooul.opportunity_id
-          WHERE
-          o.name LIKE $1 AND opp.id IS NOT NULL
-          GROUP BY
-          o.id,
-          ou.id,
-          opp.id,
-          o.name,
-          opp.profile,
-          opp.skills,
-          opp.openings,
-          opp.stipend_value`;
-    const data = await client.query(query, [ctx.params.slug]);
-      if(data.rows.length>0){
-        ctx.send({  
-          "data": data.rows
-        });
-      } else {
-        return ctx.badRequest('Data not found', { "Data" : data.rows})
-      }
+      console.log(ctx.state.user.multi_tenant_organization.name);
+      if(ctx.params.slug === ctx.state.user.multi_tenant_organization.name){
+            const query = 
+                `SELECT
+                o.id,
+                o.name,
+                ou.id AS "organization user id",
+                opp.id AS "opportunity_id",
+                opp.profile,
+                opp.skills,
+                opp.openings,
+                opp.stipend_value
+                FROM
+                organizations o
+                LEFT JOIN organization_users_multi_tenant_organization_links mto ON o.id = mto.organization_id
+                LEFT JOIN organization_users ou ON ou.id = mto.organization_user_id
+                LEFT JOIN opportunities_organization_user_links ooul ON ou.id = ooul.organization_user_id
+                LEFT JOIN opportunities opp ON opp.id = ooul.opportunity_id
+                WHERE
+                o.name LIKE $1 AND opp.id IS NOT NULL
+                GROUP BY
+                o.id,
+                ou.id,
+                opp.id,
+                o.name,
+                opp.profile,
+                opp.skills,
+                opp.openings,
+                opp.stipend_value`;
+          const data = await client.query(query, [ctx.params.slug]);
+            ctx.send({  
+              "data": data.rows
+            });
+          
+    }else{
+      return ctx.badRequest("organization is not registerd with user" )
+    }
+    });
     
     } catch (error) {
       console.log(error);

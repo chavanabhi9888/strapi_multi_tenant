@@ -51,7 +51,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
       });
       
       // // Generate JWT token
-      const token = jwt.sign({ id:user.id, organization_id:user.multi_tenant_organization.id, organization:user.multi_tenant_organization.name }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id:user.id,name:user.firstname, organization_id:user.multi_tenant_organization.id, organization:user.multi_tenant_organization.name }, process.env.JWT_SECRET);
       const client = await connect();
       const query = 
         `UPDATE organization_users SET token = $1 where email = $2`;
@@ -105,7 +105,6 @@ module.exports = createCoreController('api::organization-user.organization-user'
   async find_organizations_user(ctx) {
     try {
     await verifyToken(ctx, async () => {
-
       const client = await connect();
       const query = 
     `SELECT * from organizations where name = $1`;
@@ -145,6 +144,8 @@ module.exports = createCoreController('api::organization-user.organization-user'
   async get_user(ctx) {
     await verifyToken(ctx, async () => {
       const client = await connect();
+      console.log(ctx.params.id);
+      if(ctx.params.id == ctx.state.user.id){
       const query = 
               `SELECT
               ufougul.user_of_org_user_id AS "user_id",
@@ -158,6 +159,11 @@ module.exports = createCoreController('api::organization-user.organization-user'
       ctx.send({
         "data": data.rows
       });
+    }else{
+      ctx.send({
+        "error": "id is not correct"
+      });
+    }
     });
   }, 
   
@@ -167,6 +173,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
     try {
       await verifyToken(ctx, async () => {
       const client = await connect();
+      if(ctx.params.slug === ctx.state.user.firstname){
         const query = 
             `SELECT
             oul.organization_user_id AS "organizationUserID",
@@ -184,6 +191,11 @@ module.exports = createCoreController('api::organization-user.organization-user'
         ctx.send({
           "data": data1.rows  
         });
+      }else{
+        ctx.send({
+          "error": "organization_user name is incorrect"
+        });
+      }
       });
     
     } catch (error) {
