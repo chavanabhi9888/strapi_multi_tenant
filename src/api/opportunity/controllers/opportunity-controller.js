@@ -462,6 +462,7 @@ module.exports = {
       });
       if (user){
       const client = await connect();
+      if(ctx.params.slug === ctx.state.user.firstname){
         const query = 
             `SELECT
             ou.id AS "OrganizationUserID",
@@ -478,9 +479,13 @@ module.exports = {
           "data": data1.rows  
         });
       }else{
+        return ctx.badRequest("opportunity is not registerd with organization-user", {"data":[]} )
+      }
+      }else{
         ctx.send({"error":"User not found"})
       }
-    });
+   });
+  
     } catch (error) {
       console.log(error);
     }
@@ -524,7 +529,7 @@ module.exports = {
             });
           
     }else{
-      return ctx.badRequest("organization is not registerd with user" )
+      return ctx.badRequest("opportunity is not created with user", {"data":data.rows} )
     }
     });
     

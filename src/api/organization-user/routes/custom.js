@@ -20,7 +20,7 @@ module.exports = {
         },
         {
             method:"GET",
-            path :"/:slug/orguser",
+            path :"/org-user/:slug",
             handler:"custom.find_organizations_user",
             config: {
                 policies: [],

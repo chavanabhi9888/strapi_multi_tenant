@@ -10,11 +10,14 @@ const { createCoreController } = require('@strapi/strapi').factories;
   // v
 // }));
 
-
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { connect } = require("../../../../config/pg");
 const  verifyToken  = require("../../../../config/middleware");
+
+const util = require('util');
+const bcryptCompare = util.promisify(bcrypt.compare);
+
 
 
 
@@ -27,7 +30,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
     const body = ctx.request.body
     // Check if email and password are provided
     if (!email || !password) {
-      return ctx.badRequest('Please provide email and password');
+      ctx.send('Please provide email and password',400);
     }
     
     // // Find the user with the provided email
@@ -39,19 +42,20 @@ module.exports = createCoreController('api::organization-user.organization-user'
      populate: true,
     })
 
-  
     if (!user) {
-      return ctx.badRequest('User not found');
+      return ctx.send('User not found',404);
     }
-    
-    bcrypt.compare(ctx.request.body.password, function(err, result) {
-      if (result) {
-        return ctx.badRequest("password is incorrect");
+  
+      const isMatch = await bcryptCompare(password, user.password);
+  
+      if (!isMatch) {
+        return ctx.send('Incorrect password',401);
       }
-      });
-      
       // // Generate JWT token
-      const token = jwt.sign({ id:user.id,name:user.firstname, organization_id:user.multi_tenant_organization.id, organization:user.multi_tenant_organization.name }, process.env.JWT_SECRET);
+      // const token = jwt.sign({ id:user.id,name:user.firstname, organization_id:user.multi_tenant_organization.id, organization:user.multi_tenant_organization.name }, process.env.JWT_SECRET);
+      const token = strapi.plugins["users-permissions"].services.jwt.issue({
+        id: user.id,
+      });
       const client = await connect();
       const query = 
         `UPDATE organization_users SET token = $1 where email = $2`;
@@ -73,7 +77,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
       });
       // // console.log(user);
       if(user) {
-          return ctx.badRequest('already registered...', { "user" :user })
+          return ctx.send('already registered...',409, { "user" :user })
         } else {
             const response = await super.create(ctx);
 
@@ -132,7 +136,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
           }
 
       } else {
-        return ctx.badRequest('Organization not found', { "Organization" : ctx.params.slug})
+        return ctx.send('Organization not found',404, { "Organization" : ctx.params.slug})
       }
     });
     
@@ -161,7 +165,8 @@ module.exports = createCoreController('api::organization-user.organization-user'
       });
     }else{
       ctx.send({
-        "error": "id is not correct"
+        "error": "id is not correct",
+        staus:401
       });
     }
     });
@@ -194,7 +199,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
       }else{
         ctx.send({
           "error": "organization_user name is incorrect"
-        });
+        },400);
       }
       });
     
@@ -215,7 +220,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
           "data": data.rows
         });
       } else {
-        return ctx.badRequest('Data not found', { "Data" : data.rows})
+        return ctx.send('Data not found',404, { "Data" : data.rows})
       }
     } catch (error) {
       console.log(error);

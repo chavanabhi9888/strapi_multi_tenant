@@ -15,56 +15,58 @@ const  verifyToken  = require("../../../../config/middleware");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+const util = require('util');
+const bcryptCompare = util.promisify(bcrypt.compare);
 
 
 module.exports = createCoreController('api::user-of-org-user.user-of-org-user',({strapi})=>({
-  // async login(ctx) {
-  //   const { email, password } = ctx.request.body;
-  //   const body = ctx.request.body
-  //   // Check if email and password are provided
-  //   if (!email || !password) {
-  //     return ctx.badRequest('Please provide email and password');
-  //   }
+  async login(ctx) {
+    const { email, password } = ctx.request.body;
+    const body = ctx.request.body
+    // Check if email and password are provided
+    if (!email || !password) {
+      return ctx.badRequest('Please provide email and password');
+    }
     
-  //   // // Find the user with the provided email
+    // // Find the user with the provided email
     
-  //   const user = await strapi.db.query('api::user-of-org-user.user-of-org-user').findOne({
-  //     where: {
-  //       email
-  //     },
-  //    populate: true,
-  //   })
+    const user = await strapi.db.query('api::user-of-org-user.user-of-org-user').findOne({
+      where: {
+        email
+      },
+     populate: true,
+    })
 
-  //   const role = await strapi.db.query('admin::user').findOne({
-  //     where: {
-  //       email
-  //     },
-  //    populate: ["roles"],
-  //   })
+    const role = await strapi.db.query('admin::user').findOne({
+      where: {
+        email
+      },
+     populate: ["roles"],
+    })
 
   
-  //   if (!user) {
-  //     return ctx.badRequest('User not found');
-  //   }
+    if (!user) {
+      return ctx.badRequest('User not found');
+    }
     
-  //   bcrypt.compare(ctx.request.body.password, function(err, result) {
-  //     if (result) {
-  //       return ctx.badRequest("password is incorrect");
-  //     }
-  //     });
+    const isMatch = await bcryptCompare(password, user.password);
+  
+      if (!isMatch) {
+        return ctx.badRequest('Incorrect password');
+      }
       
-  //     // // Generate JWT token
-  //     const token = jwt.sign({ id:role.id, role_id:role.roles[0].id }, process.env.JWT_SECRET);
-  //     const client = await connect();
-  //     const query = 
-  //       `UPDATE user_of_org_users SET token = $1 where email = $2`;
-  //     const data = await client.query(query,[token,email]);
-  //     const query1 = 
-  //         `SELECT * from user_of_org_users where email = $1`;
-  //     const data1 = await client.query(query1,[email]);
-  //     // Send response
-  //     ctx.send({ "data":data1.rows });
-  // },
+      // // Generate JWT token
+      const token = jwt.sign({ id:role.id, role_id:role.roles[0].id }, process.env.JWT_SECRET);
+      const client = await connect();
+      const query = 
+        `UPDATE user_of_org_users SET token = $1 where email = $2`;
+      const data = await client.query(query,[token,email]);
+      const query1 = 
+          `SELECT * from user_of_org_users where email = $1`;
+      const data1 = await client.query(query1,[email]);
+      // Send response
+      ctx.send({ "data":data1.rows });
+  },
 
 async set_role_user(ctx) {
     try {
@@ -94,12 +96,23 @@ async set_role_user(ctx) {
               const data1 = await client.query(query1, [role]);
               ctx.send({
                "user":response
-              });
+              },200);
     }
     } catch (error) {
       console.log(error);
     }
   },
+  async find_opportunity_of_user(ctx) {
+      // Get the token from the request headers
+      await verifyToken(ctx, async () => {
+      try {
+        console.log("pppppppppppppppppppppp");
+      } catch (err) {
+        ctx.response.status = 401;
+        return { error: 'Invalid token' };
+      }
+    });
+    },
   async find_all_user_of_org_user(ctx) {
     try {
       await verifyToken(ctx, async () => {

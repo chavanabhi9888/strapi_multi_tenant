@@ -1,5 +1,5 @@
 
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken-promisified');
 
 
 module.exports = async (ctx, next) => {
@@ -29,7 +29,7 @@ module.exports = async (ctx, next) => {
             
             // verify the token and decode its payload
             const payload = jwt.verify(token, process.env.JWT_SECRET);
-            // console.log("token5",payload.id);
+            console.log("payload",payload);
            
 
             // look up the user associated with the token's payload
@@ -40,7 +40,7 @@ module.exports = async (ctx, next) => {
                populate: true,
               })
 
-            // console.log(users);
+            console.log(users);
 
             // if no user is found, return an error
             if (!users) {
@@ -58,11 +58,12 @@ module.exports = async (ctx, next) => {
             // if the token is invalid or has expired, return an error
             ctx.status = 401;
             ctx.body = {
-            error: 'Invalid token'
+            error: 'Invalid token123'
             };
+            console.log(err);
             return;
         }
 
   // call the next middleware function in the chain
   await next();
-};
+}; 
