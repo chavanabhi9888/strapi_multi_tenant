@@ -16,6 +16,7 @@ const { connect } = require("../../../../config/pg");
 const  verifyToken  = require("../../../../config/middleware");
 
 const util = require('util');
+const { log } = require('console');
 const bcryptCompare = util.promisify(bcrypt.compare);
 
 
@@ -41,7 +42,13 @@ module.exports = createCoreController('api::organization-user.organization-user'
       },
      populate: true,
     })
-
+    const role = await strapi.db.query('admin::user').findOne({
+      where: {
+        email
+      },
+     populate: true,
+    })
+    console.log(role);
     if (!user) {
       return ctx.send('User not found',404);
     }
@@ -54,7 +61,11 @@ module.exports = createCoreController('api::organization-user.organization-user'
       // // Generate JWT token
       // const token = jwt.sign({ id:user.id,name:user.firstname, organization_id:user.multi_tenant_organization.id, organization:user.multi_tenant_organization.name }, process.env.JWT_SECRET);
       const token = strapi.plugins["users-permissions"].services.jwt.issue({
-        id: user.id,
+        id: role.id,
+        org_user_id: user.id,
+        name:user.firstname, 
+        organization_id:user.multi_tenant_organization.id, 
+        organization:user.multi_tenant_organization.name
       });
       const client = await connect();
       const query = 
@@ -97,10 +108,35 @@ module.exports = createCoreController('api::organization-user.organization-user'
                 VALUES ((SELECT MAX(Id) FROM admin_users), 7);`
 
                 const data1 = await client.query(query1);
+                const user = await strapi.db.query('api::organization-user.organization-user').findOne({
+                  where: {
+                    email
+                  },
+                 populate: true,
+                })
+                const role = await strapi.db.query('admin::user').findOne({
+                  where: {
+                    email
+                  },
+                 populate: true,
+                })
+                const token = strapi.plugins["users-permissions"].services.jwt.issue({
+                  id: role.id,
+                  org_user_id: user.id,
+                  name:user.firstname, 
+                  organization_id:user.multi_tenant_organization.id, 
+                  organization:user.multi_tenant_organization.name
+                });
+                const query3 = 
+                  `UPDATE organization_users SET token = $1 where email = $2`;
+                const data3 = await client.query(query3,[token,email]);
+                const query4 = 
+                    `SELECT * from organization_users where email = $1`;
+                const data4 = await client.query(query4,[email]);
                 // ctx.send({
                 //   data:data.rows,
                 // });
-            ctx.send({ "user":data.rows, "orguser":response, "role":data1.rows})
+            ctx.send({ "user":data4.rows })
         }
   },
 
@@ -112,9 +148,10 @@ module.exports = createCoreController('api::organization-user.organization-user'
       const client = await connect();
       const query = 
     `SELECT * from organizations where name = $1`;
+    console.log(ctx.state.user.org_user);
     const data = await client.query(query, [ctx.params.slug]);
       if(data.rows.length>0){
-        if(ctx.params.slug===ctx.state.user.multi_tenant_organization.name){
+        if(ctx.params.slug===ctx.state.user.org_user.multi_tenant_organization.name){
           const query1 = 
             `SELECT
             ou.id,
@@ -148,8 +185,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
   async get_user(ctx) {
     await verifyToken(ctx, async () => {
       const client = await connect();
-      console.log(ctx.params.id);
-      if(ctx.params.id == ctx.state.user.id){
+      if(ctx.params.id == ctx.state.user.org_user.id){
       const query = 
               `SELECT
               ufougul.user_of_org_user_id AS "user_id",
@@ -166,8 +202,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
     }else{
       ctx.send({
         "error": "id is not correct",
-        staus:401
-      });
+      },400);
     }
     });
   }, 
@@ -178,7 +213,7 @@ module.exports = createCoreController('api::organization-user.organization-user'
     try {
       await verifyToken(ctx, async () => {
       const client = await connect();
-      if(ctx.params.slug === ctx.state.user.firstname){
+      if(ctx.params.slug === ctx.state.user.org_user.firstname){
         const query = 
             `SELECT
             oul.organization_user_id AS "organizationUserID",
@@ -226,15 +261,17 @@ module.exports = createCoreController('api::organization-user.organization-user'
       console.log(error);
     }
   },
-  async logout(ctx) {
+  async logout_org_user(ctx) {
     try {
       // Clear the session and cookies on the server side
+      await verifyToken(ctx, async () => {
       ctx.cookies.set('jwt', null, { httpOnly: true, maxAge: 0 });
       ctx.session = null;
-  
+ 
       ctx.send({
         message: 'Logged out successfully.'
       });
+    });
     } catch (error) {
       ctx.throw(500, 'Unable to logout.');
     }

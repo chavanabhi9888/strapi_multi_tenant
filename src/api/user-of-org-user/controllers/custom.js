@@ -43,8 +43,7 @@ module.exports = createCoreController('api::user-of-org-user.user-of-org-user',(
       },
      populate: ["roles"],
     })
-
-  
+    console.log("user",user);
     if (!user) {
       return ctx.badRequest('User not found');
     }
@@ -56,7 +55,7 @@ module.exports = createCoreController('api::user-of-org-user.user-of-org-user',(
       }
       
       // // Generate JWT token
-      const token = jwt.sign({ id:role.id, role_id:role.roles[0].id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id:role.id, role_id:role.roles[0].id, user_id:user.id }, process.env.JWT_SECRET);
       const client = await connect();
       const query = 
         `UPDATE user_of_org_users SET token = $1 where email = $2`;
@@ -106,25 +105,50 @@ async set_role_user(ctx) {
       // Get the token from the request headers
       await verifyToken(ctx, async () => {
       try {
-        console.log("pppppppppppppppppppppp");
+        const user = await strapi.db.query('api::user-of-org-user.user-of-org-user').findOne({
+          where: {
+            id:ctx.state.user.user.id
+          },
+         populate: ["organization_user"],
+        })
+        const user2 = await strapi.db.query('api::organization-user.organization-user').findOne({
+          where: {
+            id:user.organization_user.id
+          },
+         populate: true,
+        })
+        ctx.send(
+          {"Opportunity of user":user2.opportunities},
+          200
+        )
+        
       } catch (err) {
-        ctx.response.status = 401;
-        return { error: 'Invalid token' };
+        ctx.send(
+          {"Error":err},
+          401
+        )
       }
     });
     },
   async find_all_user_of_org_user(ctx) {
     try {
       await verifyToken(ctx, async () => {
-      const users = await strapi.query('api::organization-user.organization-user').findMany({
+      const users = await strapi.query('api::user-of-org-user.user-of-org-user').findMany({
         where:{
-          multi_tenant_organization: ctx.state.user.multi_tenant_organization.id
+          id: ctx.state.user.user.id
+        },
+          populate: ["organization_user"]
+            });
+      const users1 = await strapi.query('api::organization-user.organization-user').findMany({
+        where:{
+          id: users[0].organization_user.id
         },
           populate: ["user_of_org_users"]
             });
 
+
             const allUsers = [];
-            for (const user of users) {
+            for (const user of users1) {
               if (user.hasOwnProperty('user_of_org_users')) {
                 allUsers.push(...user.user_of_org_users);
               }
@@ -139,44 +163,45 @@ async set_role_user(ctx) {
         console.log(error);
       }
     },
-    // async Get_all_permission(ctx) {
-    //   try {
-    //     await verifyToken(ctx, async () => {
-    //       const users = await strapi.db.query('admin::role').findMany({
-    //         where: {
-    //           id:ctx.state.user.roles[0].id
-    //         },
-    //        populate: ["permissions"],
-    //       })
+    async Get_all_permission(ctx) {
+      try {
+        await verifyToken(ctx, async () => {
+          console.log(ctx.state.user.admin_user.roles[0].id);
+          const users = await strapi.db.query('admin::role').findMany({
+            where: {
+              id:ctx.state.user.admin_user.roles[0].id
+            },
+           populate: ["permissions"],
+          })
   
-    //           const allUsers = [];
-    //           for (const user of users) {
-    //             if (user.hasOwnProperty('permissions')) {
-    //               allUsers.push(...user.permissions);
-    //             }
-    //           }
-    //     // console.log(ctx.state.user.roles[0].id);
+              const allUsers = [];
+              for (const user of users) {
+                if (user.hasOwnProperty('permissions')) {
+                  allUsers.push(...user.permissions);
+                }
+              }
+        // console.log(ctx.state.user.roles[0].id);
           
-    //       ctx.send({  
-    //         "data": allUsers
-    //       });
-    //     });
+          ctx.send({  
+            "data": allUsers
+          });
+        });
   
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   },
-    //   async logout(ctx) {
-    //     try {
-    //       // Clear the session and cookies on the server side
-    //       ctx.cookies.set('jwt', null, { httpOnly: true, maxAge: 0 });
-    //       ctx.session = null;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      async logout_user(ctx) {
+        try {
+          // Clear the session and cookies on the server side
+          ctx.cookies.set('jwt', null, { httpOnly: true, maxAge: 0 });
+          ctx.session = null;
       
-    //       ctx.send({
-    //         message: 'Logged out successfully.'
-    //       });
-    //     } catch (error) {
-    //       ctx.throw(500, 'Unable to logout.');
-    //     }
-    //   },
+          ctx.send({
+            message: 'Logged out successfully.'
+          });
+        } catch (error) {
+          ctx.throw(500, 'Unable to logout.');
+        }
+      },
 }));

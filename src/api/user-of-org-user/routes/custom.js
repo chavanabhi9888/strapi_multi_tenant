@@ -18,15 +18,15 @@ module.exports = {
         middleware: [],
     }
 },
-// {
-//     method:"GET",
-//     path :"/user/permissions/data",
-//     handler:"custom.Get_all_permission",
-//     config: {
-//         policies: [],
-//         middleware: [],
-//     }
-// },
+{
+    method:"GET",
+    path :"/user/permissions/data",
+    handler:"custom.Get_all_permission",
+    config: {
+        policies: [],
+        middleware: [],
+    }
+},
 {
     method:"GET",
     path :"/users_of_org_user/all",
@@ -45,13 +45,13 @@ module.exports = {
         middleware: [],
     }
 },
-// {
-//     method:"POST",
-//     path :"/auth/logout",
-//     handler:"custom.logout",
-//     config: {
-//         policies: [],
-//         middleware: [],
-//     }
-// }
+{
+    method:"POST",
+    path :"/auth/logout",
+    handler:"custom.logout_user",
+    config: {
+        policies: [],
+        middleware: [],
+    }
+}
 ]}

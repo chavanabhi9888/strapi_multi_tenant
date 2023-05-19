@@ -55,11 +55,11 @@ module.exports = {
             }
         },
         {
-            "method": "POST",
-            "path": "/auth/logout",
-            "handler": "custom.logout",
-            "config": {
-              "policies": []
+            method: "POST",
+            path: "/auth/logout",
+            handler: "custom.logout_org_user",
+            config: {
+            policies: []
             }
           }
     ]

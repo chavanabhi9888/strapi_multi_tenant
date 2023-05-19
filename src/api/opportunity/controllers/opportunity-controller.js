@@ -454,6 +454,22 @@ module.exports = {
       console.log(error);
     }
   },
+  async create_opportunitty(ctx) {
+    try {
+      await verifyToken(ctx, async () => {
+      const { profile,openings, stipend_value, opportunity_type ,city, state, perks, skills, part_time, start, start_on, end_on, duration, months, responsibilities, currency, payment_type, assessment_questions, facilities, support, terms } = ctx.request.body.data;
+        const organization_id = ctx.state.user.org_user.multi_tenant_organization.id
+        ctx.request.body.data.organization_id = organization_id;
+        console.log(ctx.request.body.data);
+          const response = await strapi.db.query('api::opportunity.opportunity').create({data:ctx.request.body.data});
+          ctx.send({
+            "opportunity":response
+            },200);
+          });
+     } catch (error) {
+       console.log(error);
+     }
+      },
   async get_opportunity(ctx) {
     try {
       await verifyToken(ctx, async () => {
@@ -462,7 +478,7 @@ module.exports = {
       });
       if (user){
       const client = await connect();
-      if(ctx.params.slug === ctx.state.user.firstname){
+      if(ctx.params.slug === ctx.state.user.org_user.firstname){
         const query = 
             `SELECT
             ou.id AS "OrganizationUserID",
@@ -494,8 +510,8 @@ module.exports = {
     try {
       await verifyToken(ctx, async () => {
       const client = await connect();
-      console.log(ctx.state.user.multi_tenant_organization.name);
-      if(ctx.params.slug === ctx.state.user.multi_tenant_organization.name){
+      console.log(ctx.state.user.org_user.multi_tenant_organization.name);
+      if(ctx.params.slug === ctx.state.user.org_user.multi_tenant_organization.name){
             const query = 
                 `SELECT
                 o.id,
@@ -541,30 +557,32 @@ module.exports = {
   async get_organization_opportunity_for_organization_user(ctx) {
     try {
       await verifyToken(ctx, async () => {
-      const client = await connect();
-      const query = 
-            `SELECT
-            opp.id,
-            opp.profile,
-            opp.stipend_value,
-            mto.organization_id
-          FROM opportunities opp
-          LEFT JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
-          LEFT JOIN organization_users_multi_tenant_organization_links mto ON ooul.organization_user_id = mto.organization_user_id
-          WHERE mto.organization_id = (
-            SELECT org.id
-            FROM organizations org
-            LEFT JOIN organization_users_multi_tenant_organization_links mto ON mto.organization_id = org.id
-            WHERE mto.organization_user_id = $1
-        );`;
-    const data = await client.query(query, [ctx.params.id]);
-      if(data.rows.length>0){
-        ctx.send({  
-          "data": data.rows
-        });
-      } else {
-        return ctx.badRequest('Organization_user not found', { "Organization user" : ctx.params.id})
-      }
+        console.log(ctx.state.user.org_user.id,ctx.params.id);
+      if(ctx.params.id==ctx.state.user.org_user.id){
+              const client = await connect();
+              const query = 
+                    `SELECT
+                    *
+                  FROM opportunities opp
+                  LEFT JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
+                  LEFT JOIN organization_users_multi_tenant_organization_links mto ON ooul.organization_user_id = mto.organization_user_id
+                  WHERE mto.organization_id = (
+                    SELECT org.id
+                    FROM organizations org
+                    LEFT JOIN organization_users_multi_tenant_organization_links mto ON mto.organization_id = org.id
+                    WHERE mto.organization_user_id = $1
+                );`;
+              const data = await client.query(query, [ctx.state.user.org_user.id]);
+              console.log(data.rows);
+              ctx.send({  
+                  "data": data.rows
+                  });
+        }else{
+          ctx.send(
+            {data:"organization_user_id is not correct"},
+            400)
+        }
+      
     });
     } catch (error) {
       console.log(error);
@@ -601,7 +619,7 @@ module.exports = {
               opp.skills,
               opp.openings,
               opp.stipend_value`;
-      const data = await client.query(query, [ctx.state.user.multi_tenant_organization.name]);
+      const data = await client.query(query, [ctx.state.user.org_user.multi_tenant_organization.name]);
       if(data.rows.length>0){
         ctx.send({  
           "data": data.rows

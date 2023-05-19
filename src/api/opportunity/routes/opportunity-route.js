@@ -95,6 +95,15 @@ module.exports = {
         },
       },
       {
+        method: "POST",
+        path: "/createopportunity",
+        handler: "opportunity-controller.create_opportunitty",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
+      {
         method: "GET",
         path: "/:slug",
         handler: "opportunity-controller.get_opportunity",
@@ -115,7 +124,7 @@ module.exports = {
 
       {
         method: "GET",
-        path: "/organizations/:id",
+        path: "/organizations/organizaton-user/:id",
         handler: "opportunity-controller.get_organization_opportunity_for_organization_user",
         config: {
           policies: [],
