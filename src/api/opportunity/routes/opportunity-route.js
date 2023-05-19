@@ -104,6 +104,15 @@ module.exports = {
         },
       },
       {
+        method: "PUT",
+        path: "/updateopportunity/:id",
+        handler: "opportunity-controller.editopportunity",
+        config: {
+          policies: [],
+          middleware: [],
+        },
+      },
+      {
         method: "GET",
         path: "/:slug",
         handler: "opportunity-controller.get_opportunity",

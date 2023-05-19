@@ -449,27 +449,132 @@ module.exports = {
         id = $1`;
 
       const data = await client.query(query, [ctx.params.id]);
-      ctx.send("Record deleted sucessfully");
+      ctx.send({data:"Record deleted sucessfully"},200);
     } catch (error) {
-      console.log(error);
+      ctx.send(
+        {
+          message: "Error: opportunity not found",
+        },
+        404
+      );
     }
   },
   async create_opportunitty(ctx) {
     try {
       await verifyToken(ctx, async () => {
       const { profile,openings, stipend_value, opportunity_type ,city, state, perks, skills, part_time, start, start_on, end_on, duration, months, responsibilities, currency, payment_type, assessment_questions, facilities, support, terms } = ctx.request.body.data;
-        const organization_id = ctx.state.user.org_user.multi_tenant_organization.id
-        ctx.request.body.data.organization_id = organization_id;
+        const organization_user_id = ctx.state.user.org_user.id
+        console.log(typeof organization_user_id);
+        ctx.request.body.data.organization_user = parseInt(organization_user_id);
         console.log(ctx.request.body.data);
+        
           const response = await strapi.db.query('api::opportunity.opportunity').create({data:ctx.request.body.data});
           ctx.send({
             "opportunity":response
             },200);
           });
      } catch (error) {
-       console.log(error);
+      ctx.send({
+        "error":"Internal server error"
+        },500);
      }
-      },
+    },
+
+    async editopportunity(ctx) {
+      try {
+        const { data } = ctx.request.body;
+        const id = ctx.params.id;
+  
+        const exists = await strapi
+          .query("api::opportunity.opportunity")
+          .findOne({
+            where: {
+              id: id,
+            },
+          });
+  
+        if (exists) {
+          const update = await strapi
+            .query("api::opportunity.opportunity")
+            .update({
+              where: {
+                id: id,
+              },
+              data: {
+                profile: data.hasOwnProperty("profile")
+                  ? data.profile
+                  : exists.profile,
+                  skills: data.hasOwnProperty("skills")
+                  ? data.skills
+                  : exists.skills,
+                opportunity_type: data.hasOwnProperty("opportunity_type") ? data.opportunity_type : exists.opportunity_type,
+                city: data.hasOwnProperty("city")
+                  ? data.city
+                  : exists.city,
+                  part_time: data.hasOwnProperty("part_time")
+                  ? data.part_time
+                  : exists.part_time,
+                  openings: data.hasOwnProperty("openings")
+                  ? data.openings
+                  : exists.openings,
+                  start: data.hasOwnProperty("start")
+                  ? data.start
+                  : exists.start,
+                  start_on: data.hasOwnProperty("start_on")
+                  ? data.start_on
+                  : exists.start_on,
+                  end_on: data.hasOwnProperty("end_on")
+                  ? data.end_on
+                  : exists.end_on,
+                  responsibilities: data.hasOwnProperty("responsibilities")
+                  ? data.responsibilities
+                  : exists.responsibilities,
+                  stipend_type: data.hasOwnProperty("stipend_type")
+                  ? data.stipend_type
+                  : exists.stipend_type,
+                  payment_type: data.hasOwnProperty("payment_type")
+                  ? data.payment_type
+                  : exists.payment_type,
+                  perks: data.hasOwnProperty("perks")
+                  ? data.perks
+                  : exists.perks,
+                  ppo: data.hasOwnProperty("ppo")
+                  ? data.ppo
+                  : exists.ppo,
+                  asssessment_questions: data.hasOwnProperty("asssessment_questions")
+                  ? data.asssessment_questions
+                  : exists.asssessment_questions,
+                  facilities: data.hasOwnProperty("facilities")
+                  ? data.facilities
+                  : exists.facilities,
+                  support: data.hasOwnProperty("support")
+                  ? data.support
+                  : exists.support,
+                  terms: data.hasOwnProperty("terms")
+                  ? data.terms
+                  : exists.terms,
+              },
+            });
+          ctx.send(
+            {
+              message: "opportunity updated sucessfully",
+            },
+            200
+          );
+        }
+        if (!exists) {
+          ctx.send(
+            {
+              message: "Error: opportunity not found",
+            },
+            404
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+  },
+  
   async get_opportunity(ctx) {
     try {
       await verifyToken(ctx, async () => {

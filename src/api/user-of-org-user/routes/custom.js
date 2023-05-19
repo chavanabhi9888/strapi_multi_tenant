@@ -47,6 +47,15 @@ module.exports = {
 },
 {
     method:"POST",
+    path :"/createopportunitybyuser",
+    handler:"custom.create_opportunitty_by_user",
+    config: {
+        policies: [],
+        middleware: [],
+    }
+},
+{
+    method:"POST",
     path :"/auth/logout",
     handler:"custom.logout_user",
     config: {

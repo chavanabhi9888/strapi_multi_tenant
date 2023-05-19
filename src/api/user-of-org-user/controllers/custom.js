@@ -191,6 +191,54 @@ async set_role_user(ctx) {
           console.log(error);
         }
       },
+
+      async create_opportunitty_by_user(ctx) {
+        try {
+          await verifyToken(ctx, async () => {
+          const { profile,openings, stipend_value, opportunity_type ,city, state, perks, skills, part_time, start, start_on, end_on, duration, months, responsibilities, currency, payment_type, assessment_questions, facilities, support, terms } = ctx.request.body.data;
+            const organization_id = ctx.state.user.org_user.multi_tenant_organization.id
+            ctx.request.body.data.organization_id = organization_id;
+            console.log(ctx.request.body.data);
+              const response = await strapi.db.query('api::opportunity.opportunity').create({data:ctx.request.body.data});
+              ctx.send({
+                "opportunity":response
+                },200);
+              });
+         } catch (error) {
+          ctx.send({
+            "error":"Internal server error"
+            },500);
+         }
+        },
+        // async find_opportunity_of_organization(ctx) {
+        //   // Get the token from the request headers
+        //   await verifyToken(ctx, async () => {
+        //   try {
+        //     const user = await strapi.db.query('api::user-of-org-user.user-of-org-user').findOne({
+        //       where: {
+        //         id:ctx.state.user.user.id
+        //       },
+        //      populate: ["organization_user"],
+        //     })
+        //     const user2 = await strapi.db.query('api::organization-user.organization-user').findOne({
+        //       where: {
+        //         id:user.organization_user.id
+        //       },
+        //      populate: true,
+        //     })
+        //     ctx.send(
+        //       {"Opportunity of user":user2.opportunities},
+        //       200
+        //     )
+            
+        //   } catch (err) {
+        //     ctx.send(
+        //       {"Error":err},
+        //       401
+        //     )
+        //   }
+        // });
+        // },
       async logout_user(ctx) {
         try {
           // Clear the session and cookies on the server side
