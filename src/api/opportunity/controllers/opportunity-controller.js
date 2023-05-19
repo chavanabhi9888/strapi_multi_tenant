@@ -438,16 +438,19 @@ module.exports = {
   
   //deleting an opportunity
   async delete(ctx) {
-    try {
-      const client = await connect();
-      const query = `
-      DELETE from
-        opportunities
-      Where
-        id = $1`;
 
-      const data = await client.query(query, [ctx.params.id]);
-      ctx.send({data:"Record deleted sucessfully"},200);
+    try {
+      await verifyToken(ctx, async () => {
+          const client = await connect();
+          const query = `
+          DELETE from
+            opportunities
+          Where
+            id = $1`;
+
+          const data = await client.query(query, [ctx.params.id]);
+          ctx.send({data:"Record deleted sucessfully"},200);
+      });
     } catch (error) {
       ctx.send(
         {
@@ -462,8 +465,8 @@ module.exports = {
       await verifyToken(ctx, async () => {
       const { profile,openings, stipend_value, opportunity_type ,city, state, perks, skills, part_time, start, start_on, end_on, duration, months, responsibilities, currency, payment_type, assessment_questions, facilities, support, terms } = ctx.request.body.data;
         const organization_user_id = ctx.state.user.org_user.id
-        console.log(typeof organization_user_id);
         ctx.request.body.data.organization_user = parseInt(organization_user_id);
+      
         console.log(ctx.request.body.data);
         
           const response = await strapi.db.query('api::opportunity.opportunity').create({data:ctx.request.body.data});
@@ -480,6 +483,7 @@ module.exports = {
 
     async editopportunity(ctx) {
       try {
+      await verifyToken(ctx, async () => {
         const { data } = ctx.request.body;
         const id = ctx.params.id;
   
@@ -489,70 +493,72 @@ module.exports = {
             where: {
               id: id,
             },
+            populate:["organization_user"]
           });
-  
+          console.log(exists);
         if (exists) {
-          const update = await strapi
-            .query("api::opportunity.opportunity")
-            .update({
-              where: {
-                id: id,
-              },
-              data: {
-                profile: data.hasOwnProperty("profile")
-                  ? data.profile
-                  : exists.profile,
-                  skills: data.hasOwnProperty("skills")
-                  ? data.skills
-                  : exists.skills,
-                opportunity_type: data.hasOwnProperty("opportunity_type") ? data.opportunity_type : exists.opportunity_type,
-                city: data.hasOwnProperty("city")
-                  ? data.city
-                  : exists.city,
-                  part_time: data.hasOwnProperty("part_time")
-                  ? data.part_time
-                  : exists.part_time,
-                  openings: data.hasOwnProperty("openings")
-                  ? data.openings
-                  : exists.openings,
-                  start: data.hasOwnProperty("start")
-                  ? data.start
-                  : exists.start,
-                  start_on: data.hasOwnProperty("start_on")
-                  ? data.start_on
-                  : exists.start_on,
-                  end_on: data.hasOwnProperty("end_on")
-                  ? data.end_on
-                  : exists.end_on,
-                  responsibilities: data.hasOwnProperty("responsibilities")
-                  ? data.responsibilities
-                  : exists.responsibilities,
-                  stipend_type: data.hasOwnProperty("stipend_type")
-                  ? data.stipend_type
-                  : exists.stipend_type,
-                  payment_type: data.hasOwnProperty("payment_type")
-                  ? data.payment_type
-                  : exists.payment_type,
-                  perks: data.hasOwnProperty("perks")
-                  ? data.perks
-                  : exists.perks,
-                  ppo: data.hasOwnProperty("ppo")
-                  ? data.ppo
-                  : exists.ppo,
-                  asssessment_questions: data.hasOwnProperty("asssessment_questions")
-                  ? data.asssessment_questions
-                  : exists.asssessment_questions,
-                  facilities: data.hasOwnProperty("facilities")
-                  ? data.facilities
-                  : exists.facilities,
-                  support: data.hasOwnProperty("support")
-                  ? data.support
-                  : exists.support,
-                  terms: data.hasOwnProperty("terms")
-                  ? data.terms
-                  : exists.terms,
-              },
-            });
+          if(exists.organization_user.id == ctx.state.user.org_user.id){
+            const update = await strapi
+              .query("api::opportunity.opportunity")
+              .update({
+                where: {
+                  id: id,
+                },
+                data: {
+                  profile: data.hasOwnProperty("profile")
+                    ? data.profile
+                    : exists.profile,
+                    skills: data.hasOwnProperty("skills")
+                    ? data.skills
+                    : exists.skills,
+                  opportunity_type: data.hasOwnProperty("opportunity_type") ? data.opportunity_type : exists.opportunity_type,
+                  city: data.hasOwnProperty("city")
+                    ? data.city
+                    : exists.city,
+                    part_time: data.hasOwnProperty("part_time")
+                    ? data.part_time
+                    : exists.part_time,
+                    openings: data.hasOwnProperty("openings")
+                    ? data.openings
+                    : exists.openings,
+                    start: data.hasOwnProperty("start")
+                    ? data.start
+                    : exists.start,
+                    start_on: data.hasOwnProperty("start_on")
+                    ? data.start_on
+                    : exists.start_on,
+                    end_on: data.hasOwnProperty("end_on")
+                    ? data.end_on
+                    : exists.end_on,
+                    responsibilities: data.hasOwnProperty("responsibilities")
+                    ? data.responsibilities
+                    : exists.responsibilities,
+                    stipend_type: data.hasOwnProperty("stipend_type")
+                    ? data.stipend_type
+                    : exists.stipend_type,
+                    payment_type: data.hasOwnProperty("payment_type")
+                    ? data.payment_type
+                    : exists.payment_type,
+                    perks: data.hasOwnProperty("perks")
+                    ? data.perks
+                    : exists.perks,
+                    ppo: data.hasOwnProperty("ppo")
+                    ? data.ppo
+                    : exists.ppo,
+                    asssessment_questions: data.hasOwnProperty("asssessment_questions")
+                    ? data.asssessment_questions
+                    : exists.asssessment_questions,
+                    facilities: data.hasOwnProperty("facilities")
+                    ? data.facilities
+                    : exists.facilities,
+                    support: data.hasOwnProperty("support")
+                    ? data.support
+                    : exists.support,
+                    terms: data.hasOwnProperty("terms")
+                    ? data.terms
+                    : exists.terms,
+                },
+              });
           ctx.send(
             {
               message: "opportunity updated sucessfully",
@@ -560,16 +566,22 @@ module.exports = {
             200
           );
         }
-        if (!exists) {
+        }else{
           ctx.send(
             {
               message: "Error: opportunity not found",
             },
             404
           );
-        }
+        }});
+        
       } catch (error) {
-        console.log(error);
+        ctx.send(
+          {
+            message: error
+          },
+          500
+        );
       }
   },
   

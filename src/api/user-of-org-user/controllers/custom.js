@@ -43,7 +43,7 @@ module.exports = createCoreController('api::user-of-org-user.user-of-org-user',(
       },
      populate: ["roles"],
     })
-    console.log("user",user);
+    console.log("user",role);
     if (!user) {
       return ctx.badRequest('User not found');
     }
@@ -117,8 +117,23 @@ async set_role_user(ctx) {
           },
          populate: true,
         })
+
+        const client = await connect();
+              const query = 
+                    `SELECT
+                    *
+                  FROM opportunities opp
+                  LEFT JOIN opportunities_organization_user_links ooul ON opp.id = ooul.opportunity_id
+                  LEFT JOIN organization_users_multi_tenant_organization_links mto ON ooul.organization_user_id = mto.organization_user_id
+                  WHERE mto.organization_id = (
+                    SELECT org.id
+                    FROM organizations org
+                    LEFT JOIN organization_users_multi_tenant_organization_links mto ON mto.organization_id = org.id
+                    WHERE mto.organization_user_id = $1
+                );`;
+              const data = await client.query(query, [user2.id]);
         ctx.send(
-          {"Opportunity of user":user2.opportunities},
+          {"Opportunity of user":data.rows },
           200
         )
         
@@ -195,9 +210,10 @@ async set_role_user(ctx) {
       async create_opportunitty_by_user(ctx) {
         try {
           await verifyToken(ctx, async () => {
-          const { profile,openings, stipend_value, opportunity_type ,city, state, perks, skills, part_time, start, start_on, end_on, duration, months, responsibilities, currency, payment_type, assessment_questions, facilities, support, terms } = ctx.request.body.data;
-            const organization_id = ctx.state.user.org_user.multi_tenant_organization.id
-            ctx.request.body.data.organization_id = organization_id;
+            console.log(ctx.state.user.user.organization_user.id);
+            const { profile,openings, stipend_value, opportunity_type ,city, state, perks, skills, part_time, start, start_on, end_on, duration, months, responsibilities, currency, payment_type, assessment_questions, facilities, support, terms } = ctx.request.body.data;
+            const organization_user_id = ctx.state.user.user.organization_user.id
+            ctx.request.body.data.organization_user = organization_user_id;
             console.log(ctx.request.body.data);
               const response = await strapi.db.query('api::opportunity.opportunity').create({data:ctx.request.body.data});
               ctx.send({

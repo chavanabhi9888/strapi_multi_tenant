@@ -60,45 +60,42 @@ module.exports = async (ctx, next) => {
             }
 
             // if(user){
-            // const roles = await strapi.db.query('admin::role').findOne({
-            //     where: {
-            //         id:payload.role_id
-            //     },
-            //    populate: ["roles"],
-            //   })
+            const roles = await strapi.db.query('admin::role').findOne({
+                where: {
+                    id:payload.role_id
+                },
+               populate: ["roles"],
+              })
+              console.log(roles.name);
             
-            //   console.log(roles.name);
-            //   console.log(ctx.request.method)
-            //   if(roles.name == "Viewer"){
-            //     if(ctx.request.method == "GET"){
-            //         await next();
-            //     }
-            //   }else if(roles.name == "Edit Opportunity"){
-            //     if(ctx.request.method == "GET" || "POST" || "PUT"){
-            //         await next();
-            //     }
-            //   }else if(roles.name == "opportunity admin"){
-            //     if(ctx.request.method == "GET" || "POST" || "PUT" || "DELETE"){
-            //         await next();
-            //     }
-            //   }else{
-            //     ctx.response.status = 401;
-            //     ctx.response.body = {
-            //         error: 'Unauthorized',
-            //     };
-            //     return;
-            //     }
-            // }
-            
+            // //   console.log(ctx.state.user );
+            // //   console.log(ctx.request.method)
+            if (ctx.state.user.user) {
+                if (roles.name === "Viewer" && ctx.request.method === "GET") {
+                  await next();
+                } else if (roles.name === "Editor" && (ctx.request.method === "GET" || ctx.request.method === "POST" || ctx.request.method === "PUT")) {
+                  await next();
+                } else if (roles.name === "opportunity admin" && (ctx.request.method === "GET" || ctx.request.method === "POST" || ctx.request.method === "PUT" || ctx.request.method === "DELETE")) {
+                  await next();
+                } else {
+                  ctx.response.status = 401;
+                  ctx.response.body = {
+                    error: 'Unauthorized',
+                  };
+                  return;
+                }
+              } else {
+                await next();
+              }
 
             // if no user is found, return an error
-            // if (!admin_user) {
-            // ctx.response.status = 401;
-            // ctx.response.body = {
-            //     error: 'Invalid token111',
-            // };
-            // return;
-            // // }
+            if (!admin_user) {
+            ctx.response.status = 401;
+            ctx.response.body = {
+                error: 'Invalid token111',
+            };
+            return;
+            }
 
             // set the authenticated user in the context state
             //  ctx.state.user = await { admin_user };
@@ -112,8 +109,8 @@ module.exports = async (ctx, next) => {
             };
             // console.log(err);
             return;
-        }
-
+    }
+    
   // call the next middleware function in the chain
   await next();
 }; 
