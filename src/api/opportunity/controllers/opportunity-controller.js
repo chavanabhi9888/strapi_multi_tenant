@@ -441,10 +441,8 @@ module.exports = {
     try {
       const client = await connect();
       const query = `
-      UPDATE
+      DELETE from
         opportunities
-      SET
-        is_deleted = true
       Where
         id = $1`;
 

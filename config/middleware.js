@@ -66,7 +66,7 @@ module.exports = async (ctx, next) => {
             //     },
             //    populate: ["roles"],
             //   })
-            // }
+            
             //   console.log(roles.name);
             //   console.log(ctx.request.method)
             //   if(roles.name == "Viewer"){
@@ -88,6 +88,7 @@ module.exports = async (ctx, next) => {
             //     };
             //     return;
             //     }
+            // }
             
 
             // if no user is found, return an error
@@ -101,7 +102,7 @@ module.exports = async (ctx, next) => {
 
             // set the authenticated user in the context state
             //  ctx.state.user = await { admin_user };
-            console.log(ctx.state.user);
+            // console.log(ctx.state.user);
 
     } catch (err) {
             // if the token is invalid or has expired, return an error
